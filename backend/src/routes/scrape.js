@@ -1,6 +1,6 @@
 /**
  * Scraping API Routes
- * Handles social media scraping requests
+ * Handles social media scraping requests for all platforms
  */
 
 const express = require('express');
@@ -8,7 +8,16 @@ const router = express.Router();
 const { verifyApiKey } = require('../middleware/auth');
 const creditService = require('../services/creditService');
 const { query } = require('../config/database');
+
+// Import all scrapers
 const { scrapeProfile: scrapeTikTokProfile } = require('../../scrapers/tiktok/profile');
+const { scrapeFeed: scrapeTikTokFeed } = require('../../scrapers/tiktok/feed');
+const { scrapeHashtag: scrapeTikTokHashtag } = require('../../scrapers/tiktok/hashtag');
+const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
+const { scrapeChannel: scrapeYouTubeChannel } = require('../../scrapers/youtube/channel');
+const { scrapeProfile: scrapeTwitterProfile } = require('../../scrapers/twitter/profile');
+const { scrapeProfile: scrapeLinkedInProfile } = require('../../scrapers/linkedin/profile');
+const { scrapePosts: scrapeRedditPosts } = require('../../scrapers/reddit/posts');
 
 /**
  * Middleware to log API requests
@@ -96,17 +105,11 @@ router.get('/tiktok/profile', verifyApiKey, logApiRequest, afterRequest('tiktok'
       });
     }
 
-    // Scrape TikTok profile
     const result = await scrapeTikTokProfile(username);
-
-    if (!result.success) {
-      return res.status(500).json(result);
-    }
-
-    res.json(result);
+    return res.status(result.success ? 200 : 500).json(result);
   } catch (error) {
     console.error('TikTok profile scraping error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Failed to scrape TikTok profile',
       message: error.message,
@@ -114,24 +117,214 @@ router.get('/tiktok/profile', verifyApiKey, logApiRequest, afterRequest('tiktok'
   }
 });
 
-// ==================== Instagram Routes (Coming Soon) ====================
+/**
+ * GET /api/scrape/tiktok/feed
+ * Scrape TikTok user feed
+ */
+router.get('/tiktok/feed', verifyApiKey, logApiRequest, afterRequest('tiktok', 'feed'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
 
-router.get('/instagram/profile', verifyApiKey, async (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: 'Instagram scraping coming soon',
-    message: 'This endpoint is under development',
-  });
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/tiktok/feed?username=charlidamelio&limit=30',
+      });
+    }
+
+    const result = await scrapeTikTokFeed(username, limit ? parseInt(limit, 10) : 30);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok feed scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok feed',
+      message: error.message,
+    });
+  }
 });
 
-// ==================== YouTube Routes (Coming Soon) ====================
+/**
+ * GET /api/scrape/tiktok/hashtag
+ * Scrape TikTok hashtag videos
+ */
+router.get('/tiktok/hashtag', verifyApiKey, logApiRequest, afterRequest('tiktok', 'hashtag'), async (req, res) => {
+  try {
+    const { hashtag } = req.query;
 
-router.get('/youtube/channel', verifyApiKey, async (req, res) => {
-  res.status(501).json({
-    success: false,
-    error: 'YouTube scraping coming soon',
-    message: 'This endpoint is under development',
-  });
+    if (!hashtag) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: hashtag',
+        example: '/api/scrape/tiktok/hashtag?hashtag=fyp',
+      });
+    }
+
+    const result = await scrapeTikTokHashtag(hashtag);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok hashtag scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok hashtag',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== Instagram Routes ====================
+
+/**
+ * GET /api/scrape/instagram/profile
+ * Scrape Instagram profile
+ */
+router.get('/instagram/profile', verifyApiKey, logApiRequest, afterRequest('instagram', 'profile'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/instagram/profile?username=instagram',
+      });
+    }
+
+    const result = await scrapeInstagramProfile(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram profile scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram profile',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== YouTube Routes ====================
+
+/**
+ * GET /api/scrape/youtube/channel
+ * Scrape YouTube channel
+ */
+router.get('/youtube/channel', verifyApiKey, logApiRequest, afterRequest('youtube', 'channel'), async (req, res) => {
+  try {
+    const { channel_id } = req.query;
+
+    if (!channel_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: channel_id',
+        example: '/api/scrape/youtube/channel?channel_id=@MrBeast or channel_id=UCX6OQ3DkcsbYNE6H8uQQuVA',
+      });
+    }
+
+    const result = await scrapeYouTubeChannel(channel_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube channel scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube channel',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== Twitter/X Routes ====================
+
+/**
+ * GET /api/scrape/twitter/profile
+ * Scrape Twitter/X profile
+ */
+router.get('/twitter/profile', verifyApiKey, logApiRequest, afterRequest('twitter', 'profile'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/twitter/profile?username=elonmusk',
+      });
+    }
+
+    const result = await scrapeTwitterProfile(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Twitter profile scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Twitter profile',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== LinkedIn Routes ====================
+
+/**
+ * GET /api/scrape/linkedin/profile
+ * Scrape LinkedIn profile
+ */
+router.get('/linkedin/profile', verifyApiKey, logApiRequest, afterRequest('linkedin', 'profile'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/linkedin/profile?username=williamhgates',
+      });
+    }
+
+    const result = await scrapeLinkedInProfile(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('LinkedIn profile scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape LinkedIn profile',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== Reddit Routes ====================
+
+/**
+ * GET /api/scrape/reddit/posts
+ * Scrape Reddit subreddit posts
+ */
+router.get('/reddit/posts', verifyApiKey, logApiRequest, afterRequest('reddit', 'posts'), async (req, res) => {
+  try {
+    const { subreddit, limit, sort } = req.query;
+
+    if (!subreddit) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: subreddit',
+        example: '/api/scrape/reddit/posts?subreddit=programming&sort=hot&limit=25',
+      });
+    }
+
+    const result = await scrapeRedditPosts(
+      subreddit,
+      limit ? parseInt(limit, 10) : 25,
+      sort || 'hot'
+    );
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Reddit scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Reddit posts',
+      message: error.message,
+    });
+  }
 });
 
 // ==================== General Stats Route ====================
@@ -184,6 +377,98 @@ router.get('/stats', verifyApiKey, async (req, res) => {
       message: error.message,
     });
   }
+});
+
+/**
+ * GET /api/scrape/platforms
+ * List all available platforms and endpoints
+ */
+router.get('/platforms', async (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      platforms: [
+        {
+          name: 'TikTok',
+          endpoints: [
+            {
+              path: '/api/scrape/tiktok/profile',
+              description: 'Get TikTok profile data',
+              params: ['username'],
+              example: '?username=charlidamelio',
+            },
+            {
+              path: '/api/scrape/tiktok/feed',
+              description: 'Get TikTok user feed videos',
+              params: ['username', 'limit (optional)'],
+              example: '?username=charlidamelio&limit=30',
+            },
+            {
+              path: '/api/scrape/tiktok/hashtag',
+              description: 'Get TikTok hashtag videos',
+              params: ['hashtag'],
+              example: '?hashtag=fyp',
+            },
+          ],
+        },
+        {
+          name: 'Instagram',
+          endpoints: [
+            {
+              path: '/api/scrape/instagram/profile',
+              description: 'Get Instagram profile data',
+              params: ['username'],
+              example: '?username=instagram',
+            },
+          ],
+        },
+        {
+          name: 'YouTube',
+          endpoints: [
+            {
+              path: '/api/scrape/youtube/channel',
+              description: 'Get YouTube channel data',
+              params: ['channel_id (ID or @handle)'],
+              example: '?channel_id=@MrBeast',
+            },
+          ],
+        },
+        {
+          name: 'Twitter/X',
+          endpoints: [
+            {
+              path: '/api/scrape/twitter/profile',
+              description: 'Get Twitter/X profile data',
+              params: ['username'],
+              example: '?username=elonmusk',
+            },
+          ],
+        },
+        {
+          name: 'LinkedIn',
+          endpoints: [
+            {
+              path: '/api/scrape/linkedin/profile',
+              description: 'Get LinkedIn profile data',
+              params: ['username'],
+              example: '?username=williamhgates',
+            },
+          ],
+        },
+        {
+          name: 'Reddit',
+          endpoints: [
+            {
+              path: '/api/scrape/reddit/posts',
+              description: 'Get Reddit subreddit posts',
+              params: ['subreddit', 'limit (optional)', 'sort (optional)'],
+              example: '?subreddit=programming&sort=hot&limit=25',
+            },
+          ],
+        },
+      ],
+    },
+  });
 });
 
 module.exports = router;
