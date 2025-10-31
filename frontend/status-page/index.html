@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReachstreamAPI - System Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .overall-status {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .status-indicator {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .status-indicator.healthy {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-indicator.degraded {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-indicator.unhealthy {
+            background: #ef4444;
+            color: white;
+        }
+
+        .overall-status h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .overall-status p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .uptime-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10b981;
+            display: block;
+        }
+
+        .stat-box .label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .services {
+            margin-top: 20px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .service-item:last-child {
+            border-bottom: none;
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .service-status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .service-status-dot.healthy {
+            background: #10b981;
+        }
+
+        .service-status-dot.degraded {
+            background: #f59e0b;
+        }
+
+        .service-status-dot.unhealthy {
+            background: #ef4444;
+        }
+
+        .service-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .service-response {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .incidents {
+            margin-top: 30px;
+        }
+
+        .incidents h3 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        .no-incidents {
+            text-align: center;
+            padding: 30px;
+            color: #10b981;
+        }
+
+        .no-incidents svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 10px;
+        }
+
+        .refresh-info {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ReachstreamAPI</h1>
+            <p>Real-time System Status & Uptime Monitoring</p>
+        </div>
+
+        <div class="status-card">
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading system status...</p>
+            </div>
+
+            <div id="status-content" style="display: none;">
+                <div class="overall-status">
+                    <div id="status-indicator" class="status-indicator">
+                        ✓
+                    </div>
+                    <h2 id="status-title">All Systems Operational</h2>
+                    <p id="status-description">All services are running normally</p>
+                </div>
+
+                <div class="uptime-stats">
+                    <div class="stat-box">
+                        <span class="value" id="uptime-percent">99.9%</span>
+                        <span class="label">Uptime (30 days)</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="value" id="response-time">0ms</span>
+                        <span class="label">Avg Response Time</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="value" id="last-check">-</span>
+                        <span class="label">Last Check</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h3 style="margin-bottom: 15px; color: #1f2937;">Services</h3>
+            <div id="services" class="services">
+                <!-- Services will be loaded here -->
+            </div>
+        </div>
+
+        <div class="status-card">
+            <div class="incidents">
+                <h3>Recent Incidents</h3>
+                <div class="no-incidents">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <p><strong>No incidents reported</strong></p>
+                    <p style="margin-top: 5px; font-size: 0.875rem;">All systems have been stable</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="refresh-info">
+            Auto-refreshing every 60 seconds • Last updated: <span id="last-updated">-</span>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:3000'
+            : 'https://api.reachstream.com';
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health/summary`);
+                const data = await response.json();
+
+                updateUI(data);
+            } catch (error) {
+                showError(error);
+            }
+        }
+
+        async function fetchDetailedHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                const data = await response.json();
+
+                updateServices(data);
+            } catch (error) {
+                console.error('Failed to fetch detailed health:', error);
+            }
+        }
+
+        function updateUI(data) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('status-content').style.display = 'block';
+
+            const indicator = document.getElementById('status-indicator');
+            const title = document.getElementById('status-title');
+            const description = document.getElementById('status-description');
+
+            indicator.className = `status-indicator ${data.status}`;
+
+            if (data.status === 'healthy') {
+                indicator.textContent = '✓';
+                title.textContent = 'All Systems Operational';
+                description.textContent = 'All services are running normally';
+            } else if (data.status === 'degraded') {
+                indicator.textContent = '⚠';
+                title.textContent = 'Degraded Performance';
+                description.textContent = 'Some services are experiencing issues';
+            } else {
+                indicator.textContent = '✕';
+                title.textContent = 'Service Disruption';
+                description.textContent = 'We are experiencing technical difficulties';
+            }
+
+            document.getElementById('uptime-percent').textContent = `${data.uptime_percent}%`;
+            document.getElementById('response-time').textContent = `${data.response_time_avg_ms}ms`;
+            document.getElementById('last-check').textContent = formatTime(data.last_check);
+            document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+        }
+
+        function updateServices(data) {
+            const servicesContainer = document.getElementById('services');
+            servicesContainer.innerHTML = '';
+
+            if (data.checks) {
+                Object.entries(data.checks).forEach(([name, check]) => {
+                    const serviceItem = document.createElement('div');
+                    serviceItem.className = 'service-item';
+                    serviceItem.innerHTML = `
+                        <div class="service-info">
+                            <div class="service-status-dot ${check.status}"></div>
+                            <div>
+                                <div class="service-name">${capitalizeFirst(name)}</div>
+                                <div class="service-response">${check.message || 'Operational'}</div>
+                            </div>
+                        </div>
+                        <div class="service-response">${check.response_time_ms}ms</div>
+                    `;
+                    servicesContainer.appendChild(serviceItem);
+                });
+            }
+        }
+
+        function showError(error) {
+            document.getElementById('loading').style.display = 'none';
+            const content = document.getElementById('status-content');
+            content.style.display = 'block';
+            content.innerHTML = `
+                <div class="error-message">
+                    <strong>Failed to load status</strong><br>
+                    ${error.message}
+                </div>
+            `;
+        }
+
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            return date.toLocaleTimeString();
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Initial load
+        fetchStatus();
+        fetchDetailedHealth();
+
+        // Auto-refresh every 60 seconds
+        setInterval(() => {
+            fetchStatus();
+            fetchDetailedHealth();
+        }, 60000);
+    </script>
+</body>
+</html>
