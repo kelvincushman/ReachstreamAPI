@@ -10,14 +10,44 @@ const creditService = require('../services/creditService');
 const { query } = require('../config/database');
 
 // Import all scrapers
+// TikTok scrapers
 const { scrapeProfile: scrapeTikTokProfile } = require('../../scrapers/tiktok/profile');
 const { scrapeFeed: scrapeTikTokFeed } = require('../../scrapers/tiktok/feed');
 const { scrapeHashtag: scrapeTikTokHashtag } = require('../../scrapers/tiktok/hashtag');
+const { scrapeVideo: scrapeTikTokVideo } = require('../../scrapers/tiktok/video');
+const { scrapeTrending: scrapeTikTokTrending } = require('../../scrapers/tiktok/trending');
+const { scrapeComments: scrapeTikTokComments } = require('../../scrapers/tiktok/comments');
+
+// Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
+const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/posts');
+const { scrapePost: scrapeInstagramPost } = require('../../scrapers/instagram/post');
+const { scrapeComments: scrapeInstagramComments } = require('../../scrapers/instagram/comments');
+const { searchInstagram } = require('../../scrapers/instagram/search');
+
+// YouTube scrapers
 const { scrapeChannel: scrapeYouTubeChannel } = require('../../scrapers/youtube/channel');
+const { scrapeVideos: scrapeYouTubeVideos } = require('../../scrapers/youtube/videos');
+const { scrapeVideo: scrapeYouTubeVideo } = require('../../scrapers/youtube/video');
+const { scrapeComments: scrapeYouTubeComments } = require('../../scrapers/youtube/comments');
+const { searchVideos: searchYouTubeVideos } = require('../../scrapers/youtube/search');
+
+// Twitter scrapers
 const { scrapeProfile: scrapeTwitterProfile } = require('../../scrapers/twitter/profile');
+const { scrapeFeed: scrapeTwitterFeed } = require('../../scrapers/twitter/feed');
+const { searchTweets: searchTwitter } = require('../../scrapers/twitter/search');
+
+// LinkedIn scrapers
 const { scrapeProfile: scrapeLinkedInProfile } = require('../../scrapers/linkedin/profile');
+const { scrapeCompany: scrapeLinkedInCompany } = require('../../scrapers/linkedin/company');
+
+// Facebook scrapers
+const { scrapeProfile: scrapeFacebookProfile } = require('../../scrapers/facebook/profile');
+const { scrapePosts: scrapeFacebookPosts } = require('../../scrapers/facebook/posts');
+
+// Reddit scrapers
 const { scrapePosts: scrapeRedditPosts } = require('../../scrapers/reddit/posts');
+const { scrapeComments: scrapeRedditComments } = require('../../scrapers/reddit/comments');
 
 /**
  * Middleware to log API requests
@@ -173,6 +203,82 @@ router.get('/tiktok/hashtag', verifyApiKey, logApiRequest, afterRequest('tiktok'
   }
 });
 
+/**
+ * GET /api/scrape/tiktok/video
+ * Scrape TikTok video details
+ */
+router.get('/tiktok/video', verifyApiKey, logApiRequest, afterRequest('tiktok', 'video'), async (req, res) => {
+  try {
+    const { video_id } = req.query;
+
+    if (!video_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: video_id',
+        example: '/api/scrape/tiktok/video?video_id=7234567890123456789',
+      });
+    }
+
+    const result = await scrapeTikTokVideo(video_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok video scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok video',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/trending
+ * Scrape TikTok trending/For You videos
+ */
+router.get('/tiktok/trending', verifyApiKey, logApiRequest, afterRequest('tiktok', 'trending'), async (req, res) => {
+  try {
+    const { limit } = req.query;
+
+    const result = await scrapeTikTokTrending(limit ? parseInt(limit, 10) : 30);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok trending scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok trending',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/comments
+ * Scrape TikTok video comments
+ */
+router.get('/tiktok/comments', verifyApiKey, logApiRequest, afterRequest('tiktok', 'comments'), async (req, res) => {
+  try {
+    const { video_id, limit } = req.query;
+
+    if (!video_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: video_id',
+        example: '/api/scrape/tiktok/comments?video_id=7234567890123456789&limit=50',
+      });
+    }
+
+    const result = await scrapeTikTokComments(video_id, limit ? parseInt(limit, 10) : 50);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok comments scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok comments',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Instagram Routes ====================
 
 /**
@@ -198,6 +304,118 @@ router.get('/instagram/profile', verifyApiKey, logApiRequest, afterRequest('inst
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape Instagram profile',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/posts
+ * Scrape Instagram user posts/feed
+ */
+router.get('/instagram/posts', verifyApiKey, logApiRequest, afterRequest('instagram', 'posts'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/instagram/posts?username=instagram&limit=12',
+      });
+    }
+
+    const result = await scrapeInstagramPosts(username, limit ? parseInt(limit, 10) : 12);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram posts scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram posts',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/post
+ * Scrape Instagram post details
+ */
+router.get('/instagram/post', verifyApiKey, logApiRequest, afterRequest('instagram', 'post'), async (req, res) => {
+  try {
+    const { shortcode } = req.query;
+
+    if (!shortcode) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: shortcode',
+        example: '/api/scrape/instagram/post?shortcode=CXtWMB2goFp',
+      });
+    }
+
+    const result = await scrapeInstagramPost(shortcode);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram post scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram post',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/comments
+ * Scrape Instagram post comments
+ */
+router.get('/instagram/comments', verifyApiKey, logApiRequest, afterRequest('instagram', 'comments'), async (req, res) => {
+  try {
+    const { shortcode, limit } = req.query;
+
+    if (!shortcode) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: shortcode',
+        example: '/api/scrape/instagram/comments?shortcode=CXtWMB2goFp&limit=50',
+      });
+    }
+
+    const result = await scrapeInstagramComments(shortcode, limit ? parseInt(limit, 10) : 50);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram comments scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram comments',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/search
+ * Search Instagram
+ */
+router.get('/instagram/search', verifyApiKey, logApiRequest, afterRequest('instagram', 'search'), async (req, res) => {
+  try {
+    const { query: searchQuery, limit, type } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/instagram/search?query=travel&type=users&limit=20',
+      });
+    }
+
+    const result = await searchInstagram(searchQuery, limit ? parseInt(limit, 10) : 20, type || 'all');
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search Instagram',
       message: error.message,
     });
   }
@@ -233,6 +451,118 @@ router.get('/youtube/channel', verifyApiKey, logApiRequest, afterRequest('youtub
   }
 });
 
+/**
+ * GET /api/scrape/youtube/videos
+ * Scrape YouTube channel videos
+ */
+router.get('/youtube/videos', verifyApiKey, logApiRequest, afterRequest('youtube', 'videos'), async (req, res) => {
+  try {
+    const { channel_id, limit } = req.query;
+
+    if (!channel_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: channel_id',
+        example: '/api/scrape/youtube/videos?channel_id=@MrBeast&limit=20',
+      });
+    }
+
+    const result = await scrapeYouTubeVideos(channel_id, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube videos scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube videos',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/video
+ * Scrape YouTube video details
+ */
+router.get('/youtube/video', verifyApiKey, logApiRequest, afterRequest('youtube', 'video'), async (req, res) => {
+  try {
+    const { video_id } = req.query;
+
+    if (!video_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: video_id',
+        example: '/api/scrape/youtube/video?video_id=dQw4w9WgXcQ',
+      });
+    }
+
+    const result = await scrapeYouTubeVideo(video_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube video scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube video',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/comments
+ * Scrape YouTube video comments
+ */
+router.get('/youtube/comments', verifyApiKey, logApiRequest, afterRequest('youtube', 'comments'), async (req, res) => {
+  try {
+    const { video_id, limit } = req.query;
+
+    if (!video_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: video_id',
+        example: '/api/scrape/youtube/comments?video_id=dQw4w9WgXcQ&limit=50',
+      });
+    }
+
+    const result = await scrapeYouTubeComments(video_id, limit ? parseInt(limit, 10) : 50);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube comments scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube comments',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/search
+ * Search YouTube videos
+ */
+router.get('/youtube/search', verifyApiKey, logApiRequest, afterRequest('youtube', 'search'), async (req, res) => {
+  try {
+    const { query: searchQuery, limit } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/youtube/search?query=ai tutorial&limit=20',
+      });
+    }
+
+    const result = await searchYouTubeVideos(searchQuery, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search YouTube',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Twitter/X Routes ====================
 
 /**
@@ -258,6 +588,62 @@ router.get('/twitter/profile', verifyApiKey, logApiRequest, afterRequest('twitte
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape Twitter profile',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/twitter/feed
+ * Scrape Twitter/X user feed
+ */
+router.get('/twitter/feed', verifyApiKey, logApiRequest, afterRequest('twitter', 'feed'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/twitter/feed?username=elonmusk&limit=20',
+      });
+    }
+
+    const result = await scrapeTwitterFeed(username, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Twitter feed scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Twitter feed',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/twitter/search
+ * Search Twitter/X tweets
+ */
+router.get('/twitter/search', verifyApiKey, logApiRequest, afterRequest('twitter', 'search'), async (req, res) => {
+  try {
+    const { query: searchQuery, limit, filter } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/twitter/search?query=artificial intelligence&filter=latest&limit=20',
+      });
+    }
+
+    const result = await searchTwitter(searchQuery, limit ? parseInt(limit, 10) : 20, filter || 'top');
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Twitter search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search Twitter',
       message: error.message,
     });
   }
@@ -293,6 +679,92 @@ router.get('/linkedin/profile', verifyApiKey, logApiRequest, afterRequest('linke
   }
 });
 
+/**
+ * GET /api/scrape/linkedin/company
+ * Scrape LinkedIn company page
+ */
+router.get('/linkedin/company', verifyApiKey, logApiRequest, afterRequest('linkedin', 'company'), async (req, res) => {
+  try {
+    const { company_id } = req.query;
+
+    if (!company_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: company_id',
+        example: '/api/scrape/linkedin/company?company_id=microsoft',
+      });
+    }
+
+    const result = await scrapeLinkedInCompany(company_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('LinkedIn company scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape LinkedIn company',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== Facebook Routes ====================
+
+/**
+ * GET /api/scrape/facebook/profile
+ * Scrape Facebook profile
+ */
+router.get('/facebook/profile', verifyApiKey, logApiRequest, afterRequest('facebook', 'profile'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/facebook/profile?username=zuck',
+      });
+    }
+
+    const result = await scrapeFacebookProfile(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Facebook profile scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Facebook profile',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/facebook/posts
+ * Scrape Facebook user/page posts
+ */
+router.get('/facebook/posts', verifyApiKey, logApiRequest, afterRequest('facebook', 'posts'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/facebook/posts?username=zuck&limit=20',
+      });
+    }
+
+    const result = await scrapeFacebookPosts(username, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Facebook posts scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Facebook posts',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Reddit Routes ====================
 
 /**
@@ -322,6 +794,34 @@ router.get('/reddit/posts', verifyApiKey, logApiRequest, afterRequest('reddit', 
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape Reddit posts',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/reddit/comments
+ * Scrape Reddit post comments
+ */
+router.get('/reddit/comments', verifyApiKey, logApiRequest, afterRequest('reddit', 'comments'), async (req, res) => {
+  try {
+    const { subreddit, post_id, limit } = req.query;
+
+    if (!subreddit || !post_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameters: subreddit and post_id',
+        example: '/api/scrape/reddit/comments?subreddit=programming&post_id=abc123&limit=50',
+      });
+    }
+
+    const result = await scrapeRedditComments(subreddit, post_id, limit ? parseInt(limit, 10) : 50);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Reddit comments scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Reddit comments',
       message: error.message,
     });
   }
@@ -387,6 +887,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
+      total_endpoints: 29,
       platforms: [
         {
           name: 'TikTok',
@@ -409,6 +910,24 @@ router.get('/platforms', async (req, res) => {
               params: ['hashtag'],
               example: '?hashtag=fyp',
             },
+            {
+              path: '/api/scrape/tiktok/video',
+              description: 'Get TikTok video details',
+              params: ['video_id'],
+              example: '?video_id=7234567890123456789',
+            },
+            {
+              path: '/api/scrape/tiktok/trending',
+              description: 'Get TikTok trending/For You videos',
+              params: ['limit (optional)'],
+              example: '?limit=30',
+            },
+            {
+              path: '/api/scrape/tiktok/comments',
+              description: 'Get TikTok video comments',
+              params: ['video_id', 'limit (optional)'],
+              example: '?video_id=7234567890123456789&limit=50',
+            },
           ],
         },
         {
@@ -419,6 +938,30 @@ router.get('/platforms', async (req, res) => {
               description: 'Get Instagram profile data',
               params: ['username'],
               example: '?username=instagram',
+            },
+            {
+              path: '/api/scrape/instagram/posts',
+              description: 'Get Instagram user posts/feed',
+              params: ['username', 'limit (optional)'],
+              example: '?username=instagram&limit=12',
+            },
+            {
+              path: '/api/scrape/instagram/post',
+              description: 'Get Instagram post details',
+              params: ['shortcode'],
+              example: '?shortcode=CXtWMB2goFp',
+            },
+            {
+              path: '/api/scrape/instagram/comments',
+              description: 'Get Instagram post comments',
+              params: ['shortcode', 'limit (optional)'],
+              example: '?shortcode=CXtWMB2goFp&limit=50',
+            },
+            {
+              path: '/api/scrape/instagram/search',
+              description: 'Search Instagram (users, hashtags, posts, places)',
+              params: ['query', 'type (optional)', 'limit (optional)'],
+              example: '?query=travel&type=users&limit=20',
             },
           ],
         },
@@ -431,6 +974,30 @@ router.get('/platforms', async (req, res) => {
               params: ['channel_id (ID or @handle)'],
               example: '?channel_id=@MrBeast',
             },
+            {
+              path: '/api/scrape/youtube/videos',
+              description: 'Get YouTube channel videos',
+              params: ['channel_id', 'limit (optional)'],
+              example: '?channel_id=@MrBeast&limit=20',
+            },
+            {
+              path: '/api/scrape/youtube/video',
+              description: 'Get YouTube video details',
+              params: ['video_id'],
+              example: '?video_id=dQw4w9WgXcQ',
+            },
+            {
+              path: '/api/scrape/youtube/comments',
+              description: 'Get YouTube video comments',
+              params: ['video_id', 'limit (optional)'],
+              example: '?video_id=dQw4w9WgXcQ&limit=50',
+            },
+            {
+              path: '/api/scrape/youtube/search',
+              description: 'Search YouTube videos',
+              params: ['query', 'limit (optional)'],
+              example: '?query=ai tutorial&limit=20',
+            },
           ],
         },
         {
@@ -441,6 +1008,18 @@ router.get('/platforms', async (req, res) => {
               description: 'Get Twitter/X profile data',
               params: ['username'],
               example: '?username=elonmusk',
+            },
+            {
+              path: '/api/scrape/twitter/feed',
+              description: 'Get Twitter/X user feed/tweets',
+              params: ['username', 'limit (optional)'],
+              example: '?username=elonmusk&limit=20',
+            },
+            {
+              path: '/api/scrape/twitter/search',
+              description: 'Search Twitter/X tweets',
+              params: ['query', 'filter (optional)', 'limit (optional)'],
+              example: '?query=artificial intelligence&filter=latest&limit=20',
             },
           ],
         },
@@ -453,6 +1032,29 @@ router.get('/platforms', async (req, res) => {
               params: ['username'],
               example: '?username=williamhgates',
             },
+            {
+              path: '/api/scrape/linkedin/company',
+              description: 'Get LinkedIn company page data',
+              params: ['company_id'],
+              example: '?company_id=microsoft',
+            },
+          ],
+        },
+        {
+          name: 'Facebook',
+          endpoints: [
+            {
+              path: '/api/scrape/facebook/profile',
+              description: 'Get Facebook profile data',
+              params: ['username'],
+              example: '?username=zuck',
+            },
+            {
+              path: '/api/scrape/facebook/posts',
+              description: 'Get Facebook user/page posts',
+              params: ['username', 'limit (optional)'],
+              example: '?username=zuck&limit=20',
+            },
           ],
         },
         {
@@ -463,6 +1065,12 @@ router.get('/platforms', async (req, res) => {
               description: 'Get Reddit subreddit posts',
               params: ['subreddit', 'limit (optional)', 'sort (optional)'],
               example: '?subreddit=programming&sort=hot&limit=25',
+            },
+            {
+              path: '/api/scrape/reddit/comments',
+              description: 'Get Reddit post comments',
+              params: ['subreddit', 'post_id', 'limit (optional)'],
+              example: '?subreddit=programming&post_id=abc123&limit=50',
             },
           ],
         },
