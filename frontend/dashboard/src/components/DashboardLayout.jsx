@@ -11,6 +11,7 @@ import {
   BarChart3,
   CreditCard,
   Book,
+  Sparkles,
   Settings as SettingsIcon,
   Menu,
   X,
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Usage', href: '/usage', icon: BarChart3 },
   { name: 'Billing', href: '/billing', icon: CreditCard },
   { name: 'Documentation', href: '/docs', icon: Book },
+  { name: 'AI Prompts', href: '/ai-prompts', icon: Sparkles },
   { name: 'Settings', href: '/settings', icon: SettingsIcon },
 ];
 

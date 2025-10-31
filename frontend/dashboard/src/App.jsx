@@ -14,6 +14,7 @@ import ApiKeys from './pages/ApiKeys';
 import Usage from './pages/Usage';
 import Billing from './pages/Billing';
 import Documentation from './pages/Documentation';
+import AIPrompts from './pages/AIPrompts';
 import Settings from './pages/Settings';
 
 // Clerk publishable key from environment
@@ -45,6 +46,7 @@ function App() {
             <Route path="usage" element={<Usage />} />
             <Route path="billing" element={<Billing />} />
             <Route path="docs" element={<Documentation />} />
+            <Route path="ai-prompts" element={<AIPrompts />} />
             <Route path="settings" element={<Settings />} />
           </Route>
 
