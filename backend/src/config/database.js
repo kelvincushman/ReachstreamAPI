@@ -22,10 +22,23 @@ const dbConfig = {
 // Create connection pool
 const pool = new Pool(dbConfig);
 
-// Handle pool errors
+// Handle pool errors (DO NOT crash - let pool recover)
 pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle database client', err);
-  process.exit(-1);
+  console.error('⚠️  Unexpected error on idle database client:', err.message);
+  console.error('Stack:', err.stack);
+
+  // Log to Sentry if available (don't crash the app)
+  if (typeof Sentry !== 'undefined') {
+    Sentry.captureException(err, {
+      tags: {
+        component: 'database',
+        error_type: 'pool_error',
+      },
+    });
+  }
+
+  // Pool will handle reconnection automatically
+  // DO NOT call process.exit() here!
 });
 
 // Test database connection

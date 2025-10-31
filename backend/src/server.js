@@ -7,9 +7,10 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+// const compression = require('compression'); // TODO: npm install compression
 require('dotenv').config();
 
-const { testConnection } = require('./config/database');
+const { testConnection, pool } = require('./config/database');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -37,9 +38,9 @@ app.use(cors({
   credentials: true,
 }));
 
-// Body parsing middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parsing middleware with size limits (prevent DoS)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Rate limiting (adjust based on tier)
 const limiter = rateLimit({
@@ -194,6 +195,8 @@ app.use((err, req, res, next) => {
 
 // ==================== Server Startup ====================
 
+let server; // Store server reference for graceful shutdown
+
 const startServer = async () => {
   try {
     // Test database connection
@@ -205,8 +208,8 @@ const startServer = async () => {
       process.exit(1);
     }
 
-    // Start server
-    app.listen(PORT, '0.0.0.0', () => {
+    // Start server and save reference
+    server = app.listen(PORT, '0.0.0.0', () => {
       console.log('');
       console.log('═══════════════════════════════════════════════════════');
       console.log('🚀 ReachstreamAPI Server Started');
@@ -224,16 +227,80 @@ const startServer = async () => {
   }
 };
 
-// Handle graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
-  process.exit(0);
+// ==================== Error Handlers ====================
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 Unhandled Rejection at:', promise);
+  console.error('Reason:', reason);
+
+  // Log to Sentry if available
+  if (typeof Sentry !== 'undefined') {
+    Sentry.captureException(reason);
+  }
+
+  // In production, perform graceful shutdown
+  if (process.env.NODE_ENV === 'production') {
+    gracefulShutdown('UNHANDLED_REJECTION');
+  }
 });
 
-process.on('SIGINT', () => {
-  console.log('SIGINT signal received: closing HTTP server');
-  process.exit(0);
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('🚨 Uncaught Exception:', error);
+
+  // Log to Sentry if available
+  if (typeof Sentry !== 'undefined') {
+    Sentry.captureException(error);
+  }
+
+  // Always shutdown on uncaught exceptions
+  gracefulShutdown('UNCAUGHT_EXCEPTION');
 });
+
+// ==================== Graceful Shutdown ====================
+
+async function gracefulShutdown(signal) {
+  console.log(`\n🛑 ${signal} received, starting graceful shutdown...`);
+
+  const shutdownTimeout = 30000; // 30 seconds max
+  const timer = setTimeout(() => {
+    console.error('⚠️  Graceful shutdown timeout, forcing exit');
+    process.exit(1);
+  }, shutdownTimeout);
+
+  try {
+    // Stop accepting new connections
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(() => {
+          console.log('✅ HTTP server closed');
+          resolve();
+        });
+      });
+    }
+
+    // Close database pool
+    if (pool) {
+      await pool.end();
+      console.log('✅ Database pool closed');
+    }
+
+    // Clear timeout
+    clearTimeout(timer);
+
+    console.log('✅ Graceful shutdown completed');
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Error during graceful shutdown:', error);
+    clearTimeout(timer);
+    process.exit(1);
+  }
+}
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // Start the server
 if (require.main === module) {
