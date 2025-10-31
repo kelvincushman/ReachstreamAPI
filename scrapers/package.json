@@ -1,0 +1,25 @@
+{
+  "name": "reachstream-scrapers",
+  "version": "1.0.0",
+  "description": "ReachstreamAPI Lambda Scrapers",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "deploy": "aws lambda update-function-code --function-name tiktok-profile-scraper --zip-file fileb://tiktok-profile.zip"
+  },
+  "keywords": [
+    "lambda",
+    "scraping",
+    "tiktok",
+    "social-media"
+  ],
+  "author": "ReachstreamAPI",
+  "license": "MIT",
+  "dependencies": {
+    "got-scraping": "^4.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
