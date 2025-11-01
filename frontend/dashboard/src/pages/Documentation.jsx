@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 27 endpoints
+ * Comprehensive API documentation with all 40 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -138,6 +138,24 @@ export default function Documentation() {
         description: 'Get advanced analytics with engagement rate, growth metrics, and performance indicators',
         credits: 2,
         example: 'charlidamelio'
+      },
+      {
+        id: 'tiktok-demographics',
+        name: 'TikTok Demographics',
+        endpoint: '/api/scrape/tiktok/demographics',
+        params: '?username=:username',
+        description: 'Get audience demographics including age, gender, and geographic distribution',
+        credits: 2,
+        example: 'charlidamelio'
+      },
+      {
+        id: 'tiktok-transcript',
+        name: 'TikTok Transcript',
+        endpoint: '/api/scrape/tiktok/transcript',
+        params: '?video_id=:video_id',
+        description: 'Extract video captions, subtitles, and auto-generated transcripts',
+        credits: 1,
+        example: '7123456789012345678'
       }
     ],
     'tiktok-shop': [
@@ -212,6 +230,33 @@ export default function Documentation() {
         endpoint: '/api/scrape/instagram/search',
         params: '?query=:query',
         description: 'Search for Instagram profiles by keyword',
+        credits: 2,
+        example: 'travel'
+      },
+      {
+        id: 'instagram-reels',
+        name: 'Instagram Reels',
+        endpoint: '/api/scrape/instagram/reels',
+        params: '?username=:username',
+        description: 'Get Instagram Reels with performance metrics and engagement data',
+        credits: 2,
+        example: 'instagram'
+      },
+      {
+        id: 'instagram-stories',
+        name: 'Instagram Stories',
+        endpoint: '/api/scrape/instagram/stories',
+        params: '?username=:username',
+        description: 'Get active Instagram Stories and highlights from user profile',
+        credits: 1,
+        example: 'instagram'
+      },
+      {
+        id: 'instagram-hashtag',
+        name: 'Instagram Hashtag',
+        endpoint: '/api/scrape/instagram/hashtag',
+        params: '?hashtag=:hashtag',
+        description: 'Analyze hashtag performance with top posts and engagement metrics',
         credits: 2,
         example: 'travel'
       }

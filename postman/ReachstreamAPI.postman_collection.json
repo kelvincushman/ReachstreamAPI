@@ -253,9 +253,56 @@
             "description": "Get advanced analytics including engagement rate, growth metrics, viral potential, account health score, and performance indicators.\n\nCost: 2 credits"
           },
           "response": []
+        },
+        {
+          "name": "TikTok Demographics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/demographics?username=charlidamelio",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "demographics"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "charlidamelio",
+                  "description": "TikTok username (without @)"
+                }
+              ]
+            },
+            "description": "Get audience demographics including age distribution, gender distribution, and geographic distribution with engagement breakdown.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Transcript",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/transcript?video_id=7234567890123456789&include_subtitles=false",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "transcript"],
+              "query": [
+                {
+                  "key": "video_id",
+                  "value": "7234567890123456789",
+                  "description": "TikTok video ID"
+                },
+                {
+                  "key": "include_subtitles",
+                  "value": "false",
+                  "description": "Download and parse subtitle files (optional, default false)"
+                }
+              ]
+            },
+            "description": "Extract video captions, subtitles, auto-generated transcripts, and text analysis with entity extraction (hashtags, mentions, URLs).\n\nCost: 1 credit"
+          },
+          "response": []
         }
       ],
-      "description": "TikTok scraping endpoints for profiles, videos, hashtags, search, sounds, analytics, and more."
+      "description": "TikTok scraping endpoints for profiles, videos, hashtags, search, sounds, analytics, demographics, transcripts, and more."
     },
     {
       "name": "TikTok Shop",
@@ -475,9 +522,82 @@
             "description": "Search for Instagram profiles, hashtags, or posts.\n\nCost: 2 credits"
           },
           "response": []
+        },
+        {
+          "name": "Instagram Reels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/reels?username=instagram&limit=12",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "reels"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "instagram",
+                  "description": "Instagram username (without @)"
+                },
+                {
+                  "key": "limit",
+                  "value": "12",
+                  "description": "Number of reels (optional, default 12)"
+                }
+              ]
+            },
+            "description": "Get Instagram Reels from user profile with performance metrics, engagement data, and best performing reel identification.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Stories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/stories?username=instagram",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "stories"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "instagram",
+                  "description": "Instagram username (without @)"
+                }
+              ]
+            },
+            "description": "Get active Instagram Stories and story highlights with expiration tracking and engagement insights.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Hashtag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/hashtag?hashtag=travel&limit=12",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "hashtag"],
+              "query": [
+                {
+                  "key": "hashtag",
+                  "value": "travel",
+                  "description": "Hashtag name (without #)"
+                },
+                {
+                  "key": "limit",
+                  "value": "12",
+                  "description": "Number of posts (optional, default 12)"
+                }
+              ]
+            },
+            "description": "Analyze hashtag performance with top posts, engagement metrics, popularity tier, and content insights.\n\nCost: 2 credits"
+          },
+          "response": []
         }
       ],
-      "description": "Instagram scraping endpoints for profiles, posts, and more."
+      "description": "Instagram scraping endpoints for profiles, posts, reels, stories, hashtags, and more."
     },
     {
       "name": "YouTube",

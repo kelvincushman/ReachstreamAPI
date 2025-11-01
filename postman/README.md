@@ -50,7 +50,7 @@ The collection uses two variables that you need to configure:
 
 The collection is organized by platform:
 
-### TikTok (9 endpoints)
+### TikTok (11 endpoints)
 - **TikTok Profile** - Get profile data (1 credit)
 - **TikTok User Feed** - Get user's videos (2 credits)
 - **TikTok Hashtag** - Get hashtag videos (3 credits)
@@ -60,18 +60,23 @@ The collection is organized by platform:
 - **TikTok Search** - Search users/videos/hashtags/sounds (2 credits)
 - **TikTok Sound** - Get sound/music details (1 credit)
 - **TikTok Analytics** - Get advanced analytics with engagement metrics (2 credits)
+- **TikTok Demographics** - Get audience demographics (2 credits)
+- **TikTok Transcript** - Get video captions and transcripts (1 credit)
 
 ### TikTok Shop (3 endpoints)
 - **TikTok Shop Search** - Search products (1 credit)
 - **TikTok Shop Product** - Get product details (1 credit)
 - **TikTok Shop Reviews** - Get product reviews (2 credits)
 
-### Instagram (5 endpoints)
+### Instagram (8 endpoints)
 - **Instagram Profile** - Get profile data (1 credit)
 - **Instagram Posts** - Get user's posts (2 credits)
 - **Instagram Single Post** - Get single post details (1 credit)
 - **Instagram Comments** - Get post comments (2 credits)
 - **Instagram Search** - Search users/hashtags (2 credits)
+- **Instagram Reels** - Get user's Reels with performance metrics (2 credits)
+- **Instagram Stories** - Get active Stories and highlights (1 credit)
+- **Instagram Hashtag** - Analyze hashtag performance (2 credits)
 
 ### YouTube (5 endpoints)
 - **YouTube Channel** - Get channel data (1 credit)
@@ -101,7 +106,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 33 endpoints**
+**Total: 38 endpoints**
 
 ## Authentication
 
@@ -240,9 +245,15 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 
 ## Changelog
 
+### v1.1.0 (2025-11-01)
+- Added 5 new endpoints (38 total)
+- TikTok: Demographics and Transcript endpoints
+- Instagram: Reels, Stories, and Hashtag Performance endpoints
+- Enhanced analytics and audience insights
+
 ### v1.0.0 (2025-11-01)
 - Initial release
-- 30 endpoints across 8 platforms
+- 33 endpoints across 8 platforms
 - TikTok, TikTok Shop, Instagram, YouTube, Twitter, LinkedIn, Facebook, Reddit
 - Complete parameter documentation
 - Authentication pre-configured

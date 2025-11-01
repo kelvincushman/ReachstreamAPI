@@ -27,6 +27,8 @@ const { scrapeReviews: scrapeTikTokShopReviews } = require('../../scrapers/tikto
 const { searchTikTok } = require('../../scrapers/tiktok/search');
 const { scrapeSound: scrapeTikTokSound } = require('../../scrapers/tiktok/sound');
 const { scrapeAnalytics: scrapeTikTokAnalytics } = require('../../scrapers/tiktok/analytics');
+const { scrapeDemographics: scrapeTikTokDemographics } = require('../../scrapers/tiktok/demographics');
+const { scrapeTranscript: scrapeTikTokTranscript } = require('../../scrapers/tiktok/transcript');
 
 // Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
@@ -34,6 +36,9 @@ const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/
 const { scrapePost: scrapeInstagramPost } = require('../../scrapers/instagram/post');
 const { scrapeComments: scrapeInstagramComments } = require('../../scrapers/instagram/comments');
 const { searchInstagram } = require('../../scrapers/instagram/search');
+const { scrapeReels: scrapeInstagramReels } = require('../../scrapers/instagram/reels');
+const { scrapeStories: scrapeInstagramStories } = require('../../scrapers/instagram/stories');
+const { scrapeHashtag: scrapeInstagramHashtag } = require('../../scrapers/instagram/hashtag');
 
 // YouTube scrapers
 const { scrapeChannel: scrapeYouTubeChannel } = require('../../scrapers/youtube/channel');
@@ -471,6 +476,62 @@ router.get('/tiktok/analytics', verifyApiKey, logApiRequest, afterRequest('tikto
   }
 });
 
+/**
+ * GET /api/scrape/tiktok/demographics
+ * Get TikTok user audience demographics
+ */
+router.get('/tiktok/demographics', verifyApiKey, logApiRequest, afterRequest('tiktok', 'demographics'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/tiktok/demographics?username=charlidamelio',
+      });
+    }
+
+    const result = await scrapeTikTokDemographics(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok demographics scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok demographics',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/transcript
+ * Get TikTok video transcript, captions, and subtitles
+ */
+router.get('/tiktok/transcript', verifyApiKey, logApiRequest, afterRequest('tiktok', 'transcript'), async (req, res) => {
+  try {
+    const { video_id, include_subtitles } = req.query;
+
+    if (!video_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: video_id',
+        example: '/api/scrape/tiktok/transcript?video_id=7234567890123456789&include_subtitles=true',
+      });
+    }
+
+    const result = await scrapeTikTokTranscript(video_id, include_subtitles === 'true');
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok transcript scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok transcript',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Instagram Routes ====================
 
 /**
@@ -608,6 +669,90 @@ router.get('/instagram/search', verifyApiKey, logApiRequest, afterRequest('insta
     return res.status(500).json({
       success: false,
       error: 'Failed to search Instagram',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/reels
+ * Scrape Instagram Reels from user profile
+ */
+router.get('/instagram/reels', verifyApiKey, logApiRequest, afterRequest('instagram', 'reels'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/instagram/reels?username=instagram&limit=12',
+      });
+    }
+
+    const result = await scrapeInstagramReels(username, limit ? parseInt(limit, 10) : 12);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram reels scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram reels',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/stories
+ * Scrape Instagram Stories from user profile
+ */
+router.get('/instagram/stories', verifyApiKey, logApiRequest, afterRequest('instagram', 'stories'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/instagram/stories?username=instagram',
+      });
+    }
+
+    const result = await scrapeInstagramStories(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram stories scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram stories',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/hashtag
+ * Scrape Instagram hashtag performance
+ */
+router.get('/instagram/hashtag', verifyApiKey, logApiRequest, afterRequest('instagram', 'hashtag'), async (req, res) => {
+  try {
+    const { hashtag, limit } = req.query;
+
+    if (!hashtag) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: hashtag',
+        example: '/api/scrape/instagram/hashtag?hashtag=travel&limit=12',
+      });
+    }
+
+    const result = await scrapeInstagramHashtag(hashtag, limit ? parseInt(limit, 10) : 12);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram hashtag scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram hashtag',
       message: error.message,
     });
   }
@@ -1079,7 +1224,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 35,
+      total_endpoints: 40,
       platforms: [
         {
           name: 'TikTok',
@@ -1138,6 +1283,18 @@ router.get('/platforms', async (req, res) => {
               params: ['username'],
               example: '?username=charlidamelio',
             },
+            {
+              path: '/api/scrape/tiktok/demographics',
+              description: 'Get TikTok user audience demographics',
+              params: ['username'],
+              example: '?username=charlidamelio',
+            },
+            {
+              path: '/api/scrape/tiktok/transcript',
+              description: 'Get TikTok video transcript, captions, and subtitles',
+              params: ['video_id', 'include_subtitles (optional)'],
+              example: '?video_id=7234567890123456789&include_subtitles=true',
+            },
           ],
         },
         {
@@ -1195,6 +1352,24 @@ router.get('/platforms', async (req, res) => {
               description: 'Search Instagram (users, hashtags, posts, places)',
               params: ['query', 'type (optional)', 'limit (optional)'],
               example: '?query=travel&type=users&limit=20',
+            },
+            {
+              path: '/api/scrape/instagram/reels',
+              description: 'Get Instagram Reels from user profile',
+              params: ['username', 'limit (optional)'],
+              example: '?username=instagram&limit=12',
+            },
+            {
+              path: '/api/scrape/instagram/stories',
+              description: 'Get Instagram Stories from user profile',
+              params: ['username'],
+              example: '?username=instagram',
+            },
+            {
+              path: '/api/scrape/instagram/hashtag',
+              description: 'Get Instagram hashtag performance and top posts',
+              params: ['hashtag', 'limit (optional)'],
+              example: '?hashtag=travel&limit=12',
             },
           ],
         },

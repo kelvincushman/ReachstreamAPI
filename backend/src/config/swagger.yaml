@@ -424,6 +424,106 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/tiktok/demographics:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok audience demographics
+      description: Retrieve audience demographics including age, gender, and geographic distribution
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: charlidamelio
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      profile:
+                        type: object
+                      demographics:
+                        type: object
+                        properties:
+                          age:
+                            type: object
+                          gender:
+                            type: object
+                          geography:
+                            type: object
+                      engagement_breakdown:
+                        type: object
+                      audience_insights:
+                        type: object
+                      data_quality:
+                        type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/transcript:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok video transcript
+      description: Extract video captions, subtitles, and auto-generated transcripts
+      parameters:
+        - name: video_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "7234567890123456789"
+        - name: include_subtitles
+          in: query
+          required: false
+          description: Download and parse subtitle files
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      video_id:
+                        type: string
+                      caption:
+                        type: object
+                      subtitle_tracks:
+                        type: array
+                        items:
+                          type: object
+                      extracted_entities:
+                        type: object
+                      text_analysis:
+                        type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== TikTok Shop Endpoints ====================
   /api/scrape/tiktok-shop/search:
     get:
@@ -694,6 +794,142 @@ paths:
       responses:
         '200':
           description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/reels:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram Reels
+      description: Scrape Instagram Reels from user profile with performance metrics and engagement data
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: instagram
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 12
+            example: 12
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      total_reels:
+                        type: integer
+                      reels:
+                        type: array
+                        items:
+                          type: object
+                      performance_metrics:
+                        type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/stories:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram Stories
+      description: Scrape active Instagram Stories and highlights from user profile
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: instagram
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      active_stories:
+                        type: object
+                      story_highlights:
+                        type: object
+                      engagement_insights:
+                        type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/hashtag:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram hashtag performance
+      description: Analyze hashtag performance with top posts and engagement metrics
+      parameters:
+        - name: hashtag
+          in: query
+          required: true
+          description: Hashtag name (without #)
+          schema:
+            type: string
+            example: travel
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 12
+            example: 12
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      hashtag:
+                        type: string
+                      total_posts:
+                        type: integer
+                      top_posts:
+                        type: object
+                      performance_metrics:
+                        type: object
+                      content_insights:
+                        type: object
         '400':
           description: Bad request
         '500':
