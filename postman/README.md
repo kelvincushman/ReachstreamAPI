@@ -50,7 +50,7 @@ The collection uses two variables that you need to configure:
 
 The collection is organized by platform:
 
-### TikTok (13 endpoints)
+### TikTok (16 endpoints)
 - **TikTok Profile** - Get profile data (1 credit)
 - **TikTok User Feed** - Get user's videos (2 credits)
 - **TikTok Hashtag** - Get hashtag videos (3 credits)
@@ -64,6 +64,9 @@ The collection is organized by platform:
 - **TikTok Transcript** - Get video captions and transcripts (1 credit)
 - **TikTok Followers** - Get user's followers list with pagination (2 credits)
 - **TikTok Following** - Get user's following list with pagination (2 credits)
+- **TikTok Search Users** - Search for users by keyword with statistics (2 credits)
+- **TikTok Search Keywords** - Search for videos and content by keyword (2 credits)
+- **TikTok Trending Songs** - Get trending songs and audio with statistics (2 credits)
 
 ### TikTok Shop (3 endpoints)
 - **TikTok Shop Search** - Search products (1 credit)
@@ -123,7 +126,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 51 endpoints**
+**Total: 58 endpoints**
 
 ## Authentication
 
@@ -261,6 +264,13 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.6.0 (2025-11-01)
+- Added TikTok Enhanced Search (3 new endpoints, 58 total)
+- NEW: TikTok Search Users - Search for users by keyword
+- NEW: TikTok Search Keywords - Search for videos and content by keyword
+- NEW: TikTok Trending Songs - Get trending audio with usage statistics
+- Enhanced TikTok discovery and music/audio capabilities
 
 ### v1.5.0 (2025-11-01)
 - Added YouTube Shorts (3 new endpoints, 51 total)

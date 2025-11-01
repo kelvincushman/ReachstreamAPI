@@ -670,6 +670,208 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/tiktok/search-users:
+    get:
+      tags:
+        - TikTok
+      summary: Search TikTok users
+      description: Search for TikTok users by keyword with statistics and follower counts
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: fitness
+        - name: limit
+          in: query
+          required: false
+          description: Number of users to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      query:
+                        type: string
+                      total_users:
+                        type: integer
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            user_id:
+                              type: string
+                            username:
+                              type: string
+                            nickname:
+                              type: string
+                            avatar:
+                              type: string
+                            is_verified:
+                              type: boolean
+                            follower_count:
+                              type: integer
+                            video_count:
+                              type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/search-keywords:
+    get:
+      tags:
+        - TikTok
+      summary: Search TikTok by keyword
+      description: Search TikTok for videos, hashtags, and content by keyword
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+            example: dance
+        - name: limit
+          in: query
+          required: false
+          description: Number of results to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      keyword:
+                        type: string
+                      total_results:
+                        type: integer
+                      results:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                            video_id:
+                              type: string
+                            description:
+                              type: string
+                            hashtags:
+                              type: array
+                              items:
+                                type: string
+                            stats:
+                              type: object
+                              properties:
+                                views:
+                                  type: integer
+                                likes:
+                                  type: integer
+                                comments:
+                                  type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/trending-songs:
+    get:
+      tags:
+        - TikTok
+      summary: Get trending songs
+      description: Get trending songs and audio on TikTok with video usage statistics
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: Number of songs to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      total_songs:
+                        type: integer
+                      songs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            music_id:
+                              type: string
+                            title:
+                              type: string
+                            author:
+                              type: string
+                            album:
+                              type: string
+                            cover_url:
+                              type: string
+                            play_url:
+                              type: string
+                            duration:
+                              type: integer
+                            stats:
+                              type: object
+                              properties:
+                                video_count:
+                                  type: integer
+                                is_original:
+                                  type: boolean
+                      statistics:
+                        type: object
+                        properties:
+                          total_videos_using_songs:
+                            type: integer
+                          avg_videos_per_song:
+                            type: integer
+                          original_songs_count:
+                            type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== TikTok Shop Endpoints ====================
   /api/scrape/tiktok-shop/search:
     get:

@@ -34,6 +34,11 @@ const { scrapeTranscript: scrapeTikTokTranscript } = require('../../scrapers/tik
 const { scrapeFollowers: scrapeTikTokFollowers } = require('../../scrapers/tiktok/followers');
 const { scrapeFollowing: scrapeTikTokFollowing } = require('../../scrapers/tiktok/following');
 
+// TikTok additional search scrapers
+const { searchUsers: searchTikTokUsers } = require('../../scrapers/tiktok/search-users');
+const { searchByKeyword: searchTikTokByKeyword } = require('../../scrapers/tiktok/search-keywords');
+const { getTrendingSongs: getTikTokTrendingSongs } = require('../../scrapers/tiktok/trending-songs');
+
 // Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
 const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/posts');
@@ -608,6 +613,91 @@ router.get('/tiktok/following', verifyApiKey, logApiRequest, afterRequest('tikto
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape TikTok following',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/search-users
+ * Search for TikTok users by keyword
+ */
+router.get('/tiktok/search-users', verifyApiKey, logApiRequest, afterRequest('tiktok', 'search-users'), async (req, res) => {
+  try {
+    const { query, limit } = req.query;
+
+    if (!query) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/tiktok/search-users?query=fitness&limit=20',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await searchTikTokUsers(query, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok user search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search TikTok users',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/search-keywords
+ * Search TikTok by keyword (videos, hashtags, etc.)
+ */
+router.get('/tiktok/search-keywords', verifyApiKey, logApiRequest, afterRequest('tiktok', 'search-keywords'), async (req, res) => {
+  try {
+    const { keyword, limit } = req.query;
+
+    if (!keyword) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: keyword',
+        example: '/api/scrape/tiktok/search-keywords?keyword=dance&limit=20',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await searchTikTokByKeyword(keyword, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok keyword search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search TikTok by keyword',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/trending-songs
+ * Get trending songs/audio on TikTok
+ */
+router.get('/tiktok/trending-songs', verifyApiKey, logApiRequest, afterRequest('tiktok', 'trending-songs'), async (req, res) => {
+  try {
+    const { limit } = req.query;
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await getTikTokTrendingSongs(limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok trending songs error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get TikTok trending songs',
       message: error.message,
     });
   }
@@ -1731,7 +1821,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 55,
+      total_endpoints: 58,
       platforms: [
         {
           name: 'TikTok',
@@ -1813,6 +1903,24 @@ router.get('/platforms', async (req, res) => {
               description: 'Get TikTok user following list with pagination',
               params: ['username', 'cursor (optional)', 'limit (optional)'],
               example: '?username=charlidamelio&limit=20',
+            },
+            {
+              path: '/api/scrape/tiktok/search-users',
+              description: 'Search for TikTok users by keyword',
+              params: ['query', 'limit (optional)'],
+              example: '?query=fitness&limit=20',
+            },
+            {
+              path: '/api/scrape/tiktok/search-keywords',
+              description: 'Search TikTok by keyword for videos, hashtags, and content',
+              params: ['keyword', 'limit (optional)'],
+              example: '?keyword=dance&limit=20',
+            },
+            {
+              path: '/api/scrape/tiktok/trending-songs',
+              description: 'Get trending songs and audio on TikTok',
+              params: ['limit (optional)'],
+              example: '?limit=20',
             },
           ],
         },

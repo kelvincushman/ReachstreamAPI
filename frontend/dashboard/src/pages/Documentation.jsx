@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 51 endpoints
+ * Comprehensive API documentation with all 58 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -176,6 +176,33 @@ export default function Documentation() {
         description: 'Get list of users that a TikTok user is following with pagination',
         credits: 2,
         example: 'charlidamelio'
+      },
+      {
+        id: 'tiktok-search-users',
+        name: 'TikTok Search Users',
+        endpoint: '/api/scrape/tiktok/search-users',
+        params: '?query=:query&limit=20',
+        description: 'Search for TikTok users by keyword with statistics and follower counts',
+        credits: 2,
+        example: 'fitness'
+      },
+      {
+        id: 'tiktok-search-keywords',
+        name: 'TikTok Search Keywords',
+        endpoint: '/api/scrape/tiktok/search-keywords',
+        params: '?keyword=:keyword&limit=20',
+        description: 'Search TikTok for videos, hashtags, and content by keyword',
+        credits: 2,
+        example: 'dance'
+      },
+      {
+        id: 'tiktok-trending-songs',
+        name: 'TikTok Trending Songs',
+        endpoint: '/api/scrape/tiktok/trending-songs',
+        params: '?limit=20',
+        description: 'Get trending songs and audio on TikTok with video usage statistics',
+        credits: 2,
+        example: ''
       }
     ],
     'tiktok-shop': [
