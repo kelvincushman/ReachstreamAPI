@@ -1,0 +1,803 @@
+{
+  "info": {
+    "name": "ReachstreamAPI - Social Media Scraping",
+    "_postman_id": "reachstream-api-collection",
+    "description": "Complete collection of all ReachstreamAPI endpoints for social media scraping across TikTok, Instagram, YouTube, Twitter, Facebook, LinkedIn, and Reddit.\n\n## Authentication\nAll endpoints require an API key in the `x-api-key` header.\n\n## Base URL\nProduction: `https://api.reachstream.com`\nDevelopment: `http://localhost:3000`\n\n## Pricing\n- Free: 100 credits\n- Freelance: 25,000 credits ($47)\n- Business: 500,000 credits ($497)\n\n## Credits per Request\n- Profile/Channel endpoints: 1 credit\n- Feed/Posts endpoints: 2 credits\n- Search endpoints: 2-3 credits\n- Comments/Reviews endpoints: 2 credits",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{API_KEY}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.reachstream.com",
+      "type": "string"
+    },
+    {
+      "key": "API_KEY",
+      "value": "rsk_your_api_key_here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "TikTok",
+      "item": [
+        {
+          "name": "TikTok Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/profile?username=charlidamelio",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "profile"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "charlidamelio",
+                  "description": "TikTok username (without @)"
+                }
+              ]
+            },
+            "description": "Get complete TikTok profile data including follower count, bio, and statistics.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok User Feed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/feed?username=charlidamelio&limit=30",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "feed"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "charlidamelio"
+                },
+                {
+                  "key": "limit",
+                  "value": "30",
+                  "description": "Number of videos to fetch (optional, default 30)"
+                }
+              ]
+            },
+            "description": "Get recent videos from a TikTok user's feed.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Hashtag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/hashtag?hashtag=viral",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "hashtag"],
+              "query": [
+                {
+                  "key": "hashtag",
+                  "value": "viral",
+                  "description": "Hashtag to search for (without #)"
+                }
+              ]
+            },
+            "description": "Get videos for a specific hashtag with metadata.\n\nCost: 3 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Video",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/video?video_id=7234567890123456789",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "video"],
+              "query": [
+                {
+                  "key": "video_id",
+                  "value": "7234567890123456789",
+                  "description": "TikTok video ID"
+                }
+              ]
+            },
+            "description": "Get detailed information about a specific TikTok video.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Trending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/trending?limit=30",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "trending"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "30",
+                  "description": "Number of videos (optional, default 30)"
+                }
+              ]
+            },
+            "description": "Get currently trending TikTok videos from For You page.\n\nCost: 3 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/comments?video_id=7234567890123456789&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "comments"],
+              "query": [
+                {
+                  "key": "video_id",
+                  "value": "7234567890123456789"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of comments (optional, default 50)"
+                }
+              ]
+            },
+            "description": "Get comments from a TikTok video with user information.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "TikTok scraping endpoints for profiles, videos, hashtags, and more."
+    },
+    {
+      "name": "TikTok Shop",
+      "item": [
+        {
+          "name": "TikTok Shop Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok-shop/search?query=sneakers&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok-shop", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "sneakers",
+                  "description": "Search query"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, default 20)"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "description": "Pagination cursor (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Search for products on TikTok Shop with pricing, ratings, and seller information.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Shop Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok-shop/product?product_id=1234567890",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok-shop", "product"],
+              "query": [
+                {
+                  "key": "product_id",
+                  "value": "1234567890",
+                  "description": "TikTok Shop product ID"
+                }
+              ]
+            },
+            "description": "Get detailed product information including variants, shipping, and seller details.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Shop Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok-shop/reviews?product_id=1234567890&limit=50&filter=all",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok-shop", "reviews"],
+              "query": [
+                {
+                  "key": "product_id",
+                  "value": "1234567890"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of reviews (optional, default 50)"
+                },
+                {
+                  "key": "filter",
+                  "value": "all",
+                  "description": "Filter: all, positive, negative, with_media (optional)"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "description": "Pagination cursor (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get product reviews with ratings, images, and verified purchase status.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "TikTok Shop e-commerce endpoints for product search, details, and reviews."
+    },
+    {
+      "name": "Instagram",
+      "item": [
+        {
+          "name": "Instagram Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/profile?username=instagram",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "profile"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "instagram"
+                }
+              ]
+            },
+            "description": "Get Instagram profile data including followers, bio, and post count.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/posts?username=instagram&limit=12",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "posts"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "instagram"
+                },
+                {
+                  "key": "limit",
+                  "value": "12",
+                  "description": "Number of posts (optional, default 12)"
+                }
+              ]
+            },
+            "description": "Get recent posts from an Instagram account.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Single Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/post?shortcode=CXtWMB2goFp",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "post"],
+              "query": [
+                {
+                  "key": "shortcode",
+                  "value": "CXtWMB2goFp",
+                  "description": "Instagram post shortcode (from URL)"
+                }
+              ]
+            },
+            "description": "Get detailed information about a single Instagram post.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/comments?shortcode=CXtWMB2goFp&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "comments"],
+              "query": [
+                {
+                  "key": "shortcode",
+                  "value": "CXtWMB2goFp"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of comments (optional, default 50)"
+                }
+              ]
+            },
+            "description": "Get comments from an Instagram post.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/search?query=travel&type=users&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "travel"
+                },
+                {
+                  "key": "type",
+                  "value": "users",
+                  "description": "Type: all, users, hashtags, posts (optional)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Search for Instagram profiles, hashtags, or posts.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "Instagram scraping endpoints for profiles, posts, and more."
+    },
+    {
+      "name": "YouTube",
+      "item": [
+        {
+          "name": "YouTube Channel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/channel?channel_id=@MrBeast",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "channel"],
+              "query": [
+                {
+                  "key": "channel_id",
+                  "value": "@MrBeast",
+                  "description": "Channel ID or @handle"
+                }
+              ]
+            },
+            "description": "Get YouTube channel information including subscriber count and description.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Channel Videos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/videos?channel_id=@MrBeast&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "videos"],
+              "query": [
+                {
+                  "key": "channel_id",
+                  "value": "@MrBeast"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of videos (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Get recent videos from a YouTube channel.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Video",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/video?video_id=dQw4w9WgXcQ",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "video"],
+              "query": [
+                {
+                  "key": "video_id",
+                  "value": "dQw4w9WgXcQ"
+                }
+              ]
+            },
+            "description": "Get detailed video information including views, likes, and description.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/comments?video_id=dQw4w9WgXcQ&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "comments"],
+              "query": [
+                {
+                  "key": "video_id",
+                  "value": "dQw4w9WgXcQ"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of comments (optional, default 50)"
+                }
+              ]
+            },
+            "description": "Get comments from a YouTube video.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/search?query=ai tutorial&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "ai tutorial"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Search for YouTube videos by keyword.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "YouTube scraping endpoints for channels, videos, and more."
+    },
+    {
+      "name": "Twitter / X",
+      "item": [
+        {
+          "name": "Twitter Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/twitter/profile?username=elonmusk",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "twitter", "profile"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "elonmusk"
+                }
+              ]
+            },
+            "description": "Get Twitter profile information including followers, bio, and tweet count.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Twitter User Feed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/twitter/feed?username=elonmusk&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "twitter", "feed"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "elonmusk"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of tweets (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Get recent tweets from a Twitter user's timeline.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Twitter Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/twitter/search?query=artificial intelligence&filter=latest&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "twitter", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "artificial intelligence"
+                },
+                {
+                  "key": "filter",
+                  "value": "latest",
+                  "description": "Filter: top or latest (optional, default top)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of tweets (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Search for tweets by keyword with optional filters.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "Twitter/X scraping endpoints for profiles, tweets, and search."
+    },
+    {
+      "name": "LinkedIn",
+      "item": [
+        {
+          "name": "LinkedIn Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/linkedin/profile?username=williamhgates",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "linkedin", "profile"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "williamhgates"
+                }
+              ]
+            },
+            "description": "Get LinkedIn profile information including work history and connections.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "LinkedIn Company",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/linkedin/company?company_id=microsoft",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "linkedin", "company"],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "microsoft"
+                }
+              ]
+            },
+            "description": "Get LinkedIn company page information including employee count and industry.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "LinkedIn scraping endpoints for profiles and companies."
+    },
+    {
+      "name": "Facebook",
+      "item": [
+        {
+          "name": "Facebook Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/facebook/profile?username=zuck",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "facebook", "profile"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "zuck"
+                }
+              ]
+            },
+            "description": "Get Facebook profile information.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Facebook Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/facebook/posts?username=zuck&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "facebook", "posts"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "zuck"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of posts (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Get recent posts from a Facebook user or page.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "Facebook scraping endpoints for profiles and posts."
+    },
+    {
+      "name": "Reddit",
+      "item": [
+        {
+          "name": "Reddit Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/reddit/posts?subreddit=programming&sort=hot&limit=25",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "reddit", "posts"],
+              "query": [
+                {
+                  "key": "subreddit",
+                  "value": "programming"
+                },
+                {
+                  "key": "sort",
+                  "value": "hot",
+                  "description": "Sort: hot, new, top, rising (optional, default hot)"
+                },
+                {
+                  "key": "limit",
+                  "value": "25",
+                  "description": "Number of posts (optional, default 25)"
+                }
+              ]
+            },
+            "description": "Get posts from a subreddit.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Reddit Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/reddit/comments?subreddit=programming&post_id=abc123&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "reddit", "comments"],
+              "query": [
+                {
+                  "key": "subreddit",
+                  "value": "programming"
+                },
+                {
+                  "key": "post_id",
+                  "value": "abc123"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Number of comments (optional, default 50)"
+                }
+              ]
+            },
+            "description": "Get comments from a Reddit post.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "Reddit scraping endpoints for posts and comments."
+    },
+    {
+      "name": "General",
+      "item": [
+        {
+          "name": "List Platforms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/platforms",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "platforms"]
+            },
+            "description": "Get a complete list of all available scraping platforms and their endpoints.\n\nNo authentication required."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/stats",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "stats"]
+            },
+            "description": "Get API usage statistics for the authenticated user.\n\nReturns overall stats and breakdown by platform."
+          },
+          "response": []
+        }
+      ],
+      "description": "General API endpoints for platform information and user statistics."
+    }
+  ]
+}
