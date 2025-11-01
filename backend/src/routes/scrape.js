@@ -64,6 +64,13 @@ const { scrapePosts: scrapeFacebookPosts } = require('../../scrapers/facebook/po
 const { scrapePosts: scrapeRedditPosts } = require('../../scrapers/reddit/posts');
 const { scrapeComments: scrapeRedditComments } = require('../../scrapers/reddit/comments');
 
+// Threads scrapers
+const { scrapeProfile: scrapeThreadsProfile } = require('../../scrapers/threads/profile');
+const { scrapePosts: scrapeThreadsPosts } = require('../../scrapers/threads/posts');
+const { scrapePost: scrapeThreadsPost } = require('../../scrapers/threads/post');
+const { searchPosts: searchThreadsPosts } = require('../../scrapers/threads/search');
+const { searchUsers: searchThreadsUsers } = require('../../scrapers/threads/search-users');
+
 /**
  * Middleware to log API requests
  */
@@ -1164,6 +1171,148 @@ router.get('/reddit/comments', verifyApiKey, logApiRequest, afterRequest('reddit
   }
 });
 
+// ==================== Threads Routes ====================
+
+/**
+ * GET /api/scrape/threads/profile
+ * Scrape Threads profile
+ */
+router.get('/threads/profile', verifyApiKey, logApiRequest, afterRequest('threads', 'profile'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/threads/profile?username=zuck',
+      });
+    }
+
+    const result = await scrapeThreadsProfile(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Threads profile scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Threads profile',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/threads/posts
+ * Scrape Threads user posts
+ */
+router.get('/threads/posts', verifyApiKey, logApiRequest, afterRequest('threads', 'posts'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/threads/posts?username=zuck&limit=20',
+      });
+    }
+
+    const result = await scrapeThreadsPosts(username, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Threads posts scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Threads posts',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/threads/post
+ * Scrape Threads single post
+ */
+router.get('/threads/post', verifyApiKey, logApiRequest, afterRequest('threads', 'post'), async (req, res) => {
+  try {
+    const { post_id } = req.query;
+
+    if (!post_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: post_id',
+        example: '/api/scrape/threads/post?post_id=ABC123',
+      });
+    }
+
+    const result = await scrapeThreadsPost(post_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Threads post scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Threads post',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/threads/search
+ * Search Threads posts
+ */
+router.get('/threads/search', verifyApiKey, logApiRequest, afterRequest('threads', 'search'), async (req, res) => {
+  try {
+    const { query: searchQuery, limit } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/threads/search?query=technology&limit=20',
+      });
+    }
+
+    const result = await searchThreadsPosts(searchQuery, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Threads search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search Threads',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/threads/search-users
+ * Search Threads users
+ */
+router.get('/threads/search-users', verifyApiKey, logApiRequest, afterRequest('threads', 'search-users'), async (req, res) => {
+  try {
+    const { query: searchQuery, limit } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/threads/search-users?query=tech&limit=20',
+      });
+    }
+
+    const result = await searchThreadsUsers(searchQuery, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Threads user search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search Threads users',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== General Stats Route ====================
 
 /**
@@ -1224,7 +1373,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 40,
+      total_endpoints: 43,
       platforms: [
         {
           name: 'TikTok',
@@ -1479,6 +1628,41 @@ router.get('/platforms', async (req, res) => {
               description: 'Get Reddit post comments',
               params: ['subreddit', 'post_id', 'limit (optional)'],
               example: '?subreddit=programming&post_id=abc123&limit=50',
+            },
+          ],
+        },
+        {
+          name: 'Threads',
+          endpoints: [
+            {
+              path: '/api/scrape/threads/profile',
+              description: 'Get Threads profile data',
+              params: ['username'],
+              example: '?username=zuck',
+            },
+            {
+              path: '/api/scrape/threads/posts',
+              description: 'Get Threads user posts',
+              params: ['username', 'limit (optional)'],
+              example: '?username=zuck&limit=20',
+            },
+            {
+              path: '/api/scrape/threads/post',
+              description: 'Get Threads single post details',
+              params: ['post_id'],
+              example: '?post_id=ABC123',
+            },
+            {
+              path: '/api/scrape/threads/search',
+              description: 'Search Threads posts by keyword',
+              params: ['query', 'limit (optional)'],
+              example: '?query=technology&limit=20',
+            },
+            {
+              path: '/api/scrape/threads/search-users',
+              description: 'Search Threads users by keyword',
+              params: ['query', 'limit (optional)'],
+              example: '?query=tech&limit=20',
             },
           ],
         },

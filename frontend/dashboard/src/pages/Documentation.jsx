@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 40 endpoints
+ * Comprehensive API documentation with all 43 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -27,7 +27,8 @@ export default function Documentation() {
     twitter: false,
     facebook: false,
     linkedin: false,
-    reddit: false
+    reddit: false,
+    threads: false
   });
   const [copiedEndpoint, setCopiedEndpoint] = useState(null);
 
@@ -396,6 +397,53 @@ export default function Documentation() {
         credits: 2,
         example: 'abc123'
       }
+    ],
+    threads: [
+      {
+        id: 'threads-profile',
+        name: 'Threads Profile',
+        endpoint: '/api/scrape/threads/profile',
+        params: '?username=:username',
+        description: 'Get Threads profile data including follower count, bio, and engagement',
+        credits: 1,
+        example: 'zuck'
+      },
+      {
+        id: 'threads-posts',
+        name: 'Threads Posts',
+        endpoint: '/api/scrape/threads/posts',
+        params: '?username=:username',
+        description: 'Get recent posts from a Threads user',
+        credits: 2,
+        example: 'zuck'
+      },
+      {
+        id: 'threads-post',
+        name: 'Threads Single Post',
+        endpoint: '/api/scrape/threads/post',
+        params: '?post_id=:post_id',
+        description: 'Get detailed information about a single Threads post',
+        credits: 1,
+        example: 'ABC123'
+      },
+      {
+        id: 'threads-search',
+        name: 'Threads Search',
+        endpoint: '/api/scrape/threads/search',
+        params: '?query=:query',
+        description: 'Search for Threads posts by keyword',
+        credits: 2,
+        example: 'technology'
+      },
+      {
+        id: 'threads-search-users',
+        name: 'Threads User Search',
+        endpoint: '/api/scrape/threads/search-users',
+        params: '?query=:query',
+        description: 'Search for Threads users by keyword',
+        credits: 2,
+        example: 'tech'
+      }
     ]
   };
 
@@ -407,7 +455,8 @@ export default function Documentation() {
     twitter: 'Twitter / X',
     facebook: 'Facebook',
     linkedin: 'LinkedIn',
-    reddit: 'Reddit'
+    reddit: 'Reddit',
+    threads: 'Threads'
   };
 
   const platformColors = {
@@ -418,7 +467,8 @@ export default function Documentation() {
     twitter: 'border-blue-500',
     facebook: 'border-blue-600',
     linkedin: 'border-blue-700',
-    reddit: 'border-orange-500'
+    reddit: 'border-orange-500',
+    threads: 'border-gray-900'
   };
 
   return (

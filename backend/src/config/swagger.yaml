@@ -34,6 +34,8 @@ tags:
     description: Facebook scraping endpoints
   - name: Reddit
     description: Reddit scraping endpoints
+  - name: Threads
+    description: Threads (Meta) scraping endpoints
   - name: General
     description: General API endpoints
 
@@ -1306,6 +1308,200 @@ paths:
       responses:
         '200':
           description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== Threads Endpoints ====================
+  /api/scrape/threads/profile:
+    get:
+      tags:
+        - Threads
+      summary: Get Threads profile
+      description: Retrieve Threads profile data including follower count, bio, and engagement metrics
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: zuck
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                      username:
+                        type: string
+                      full_name:
+                        type: string
+                      biography:
+                        type: string
+                      follower_count:
+                        type: integer
+                      following_count:
+                        type: integer
+                      post_count:
+                        type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/threads/posts:
+    get:
+      tags:
+        - Threads
+      summary: Get Threads user posts
+      description: Retrieve posts from a Threads user's profile
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: zuck
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/threads/post:
+    get:
+      tags:
+        - Threads
+      summary: Get Threads single post
+      description: Retrieve detailed information about a single Threads post
+      parameters:
+        - name: post_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: ABC123
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      shortcode:
+                        type: string
+                      caption:
+                        type: string
+                      created_at:
+                        type: string
+                      stats:
+                        type: object
+                        properties:
+                          likes:
+                            type: integer
+                          comments:
+                            type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/threads/search:
+    get:
+      tags:
+        - Threads
+      summary: Search Threads posts
+      description: Search for Threads posts by keyword
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: technology
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/threads/search-users:
+    get:
+      tags:
+        - Threads
+      summary: Search Threads users
+      description: Search for Threads users by keyword
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: tech
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      query:
+                        type: string
+                      total_results:
+                        type: integer
+                      users:
+                        type: array
+                        items:
+                          type: object
         '400':
           description: Bad request
         '500':

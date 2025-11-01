@@ -965,6 +965,132 @@
       "description": "Reddit scraping endpoints for posts and comments."
     },
     {
+      "name": "Threads",
+      "item": [
+        {
+          "name": "Threads Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/threads/profile?username=zuck",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "threads", "profile"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "zuck",
+                  "description": "Threads username (without @)"
+                }
+              ]
+            },
+            "description": "Get Threads profile data including follower count, bio, and engagement metrics.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Threads Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/threads/posts?username=zuck&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "threads", "posts"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "zuck",
+                  "description": "Threads username (without @)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of posts (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Get recent posts from a Threads user with content breakdown and summary stats.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Threads Single Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/threads/post?post_id=ABC123",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "threads", "post"],
+              "query": [
+                {
+                  "key": "post_id",
+                  "value": "ABC123",
+                  "description": "Threads post ID or shortcode"
+                }
+              ]
+            },
+            "description": "Get detailed information about a single Threads post including author, stats, and top comments.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Threads Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/threads/search?query=technology&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "threads", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "technology",
+                  "description": "Search query"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Search for Threads posts by keyword with content statistics.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Threads User Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/threads/search-users?query=tech&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "threads", "search-users"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "tech",
+                  "description": "Search query"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, default 20)"
+                }
+              ]
+            },
+            "description": "Search for Threads users by keyword with follower stats and verification status.\n\nCost: 2 credits"
+          },
+          "response": []
+        }
+      ],
+      "description": "Threads (Meta) scraping endpoints for profiles, posts, and search."
+    },
+    {
       "name": "General",
       "item": [
         {

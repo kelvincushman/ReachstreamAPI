@@ -102,11 +102,18 @@ The collection is organized by platform:
 - **Reddit Posts** - Get subreddit posts (2 credits)
 - **Reddit Comments** - Get post comments (2 credits)
 
+### Threads (5 endpoints)
+- **Threads Profile** - Get profile data (1 credit)
+- **Threads Posts** - Get user's posts (2 credits)
+- **Threads Single Post** - Get post details (1 credit)
+- **Threads Search** - Search posts by keyword (2 credits)
+- **Threads User Search** - Search users by keyword (2 credits)
+
 ### General (2 endpoints)
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 38 endpoints**
+**Total: 43 endpoints**
 
 ## Authentication
 
@@ -244,6 +251,12 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.2.0 (2025-11-01)
+- Added Threads platform (5 new endpoints, 43 total)
+- NEW: Threads Profile, Posts, Single Post, Search, User Search
+- 8 platforms total (added Threads by Meta)
+- Comprehensive Threads support with engagement metrics
 
 ### v1.1.0 (2025-11-01)
 - Added 5 new endpoints (38 total)
