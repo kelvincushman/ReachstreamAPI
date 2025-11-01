@@ -781,9 +781,93 @@
             "description": "Search for YouTube videos by keyword.\n\nCost: 2 credits"
           },
           "response": []
+        },
+        {
+          "name": "YouTube Shorts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/shorts?channel_id=@MrBeast&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "shorts"],
+              "query": [
+                {
+                  "key": "channel_id",
+                  "value": "@MrBeast",
+                  "description": "YouTube channel ID or handle"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of Shorts to fetch (optional, default 20, max 50)"
+                }
+              ]
+            },
+            "description": "Get YouTube Shorts videos from a channel.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Shorts Paginated",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/shorts-paginated?channel_id=@MrBeast&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "shorts-paginated"],
+              "query": [
+                {
+                  "key": "channel_id",
+                  "value": "@MrBeast",
+                  "description": "YouTube channel ID or handle"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of Shorts to fetch (optional, default 20, max 50)"
+                },
+                {
+                  "key": "continuation_token",
+                  "value": "",
+                  "description": "Pagination token for next page (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get YouTube Shorts with pagination support using continuation tokens.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Trending Shorts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/trending-shorts?country=US&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "trending-shorts"],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "US",
+                  "description": "Country code for trending (optional, default US)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of Shorts to fetch (optional, default 20, max 50)"
+                }
+              ]
+            },
+            "description": "Get trending YouTube Shorts videos by country with statistics.\n\nCost: 3 credits"
+          },
+          "response": []
         }
       ],
-      "description": "YouTube scraping endpoints for channels, videos, and more."
+      "description": "YouTube scraping endpoints for channels, videos, comments, search, and Shorts."
     },
     {
       "name": "Twitter / X",

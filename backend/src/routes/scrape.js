@@ -50,6 +50,9 @@ const { scrapeVideos: scrapeYouTubeVideos } = require('../../scrapers/youtube/vi
 const { scrapeVideo: scrapeYouTubeVideo } = require('../../scrapers/youtube/video');
 const { scrapeComments: scrapeYouTubeComments } = require('../../scrapers/youtube/comments');
 const { searchVideos: searchYouTubeVideos } = require('../../scrapers/youtube/search');
+const { scrapeShorts: scrapeYouTubeShorts } = require('../../scrapers/youtube/shorts');
+const { scrapeShortsPaginated: scrapeYouTubeShortsPaginated } = require('../../scrapers/youtube/shorts-paginated');
+const { scrapeTrendingShorts: scrapeYouTubeTrendingShorts } = require('../../scrapers/youtube/trending-shorts');
 
 // Twitter scrapers
 const { scrapeProfile: scrapeTwitterProfile } = require('../../scrapers/twitter/profile');
@@ -972,6 +975,82 @@ router.get('/youtube/search', verifyApiKey, logApiRequest, afterRequest('youtube
   }
 });
 
+/**
+ * GET /api/scrape/youtube/shorts
+ * Scrape YouTube Shorts from channel
+ */
+router.get('/youtube/shorts', verifyApiKey, logApiRequest, afterRequest('youtube', 'shorts'), async (req, res) => {
+  try {
+    const { channel_id, limit } = req.query;
+
+    if (!channel_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: channel_id',
+        example: '/api/scrape/youtube/shorts?channel_id=@MrBeast&limit=20',
+      });
+    }
+
+    const result = await scrapeYouTubeShorts(channel_id, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube Shorts scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube Shorts',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/shorts-paginated
+ * Scrape YouTube Shorts with pagination
+ */
+router.get('/youtube/shorts-paginated', verifyApiKey, logApiRequest, afterRequest('youtube', 'shorts-paginated'), async (req, res) => {
+  try {
+    const { channel_id, limit, continuation_token } = req.query;
+
+    if (!channel_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: channel_id',
+        example: '/api/scrape/youtube/shorts-paginated?channel_id=@MrBeast&limit=20',
+      });
+    }
+
+    const result = await scrapeYouTubeShortsPaginated(channel_id, limit ? parseInt(limit, 10) : 20, continuation_token);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube Shorts paginated scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube Shorts (paginated)',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/trending-shorts
+ * Scrape trending YouTube Shorts
+ */
+router.get('/youtube/trending-shorts', verifyApiKey, logApiRequest, afterRequest('youtube', 'trending-shorts'), async (req, res) => {
+  try {
+    const { country, limit } = req.query;
+
+    const result = await scrapeYouTubeTrendingShorts(country || 'US', limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube trending Shorts scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube trending Shorts',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Twitter/X Routes ====================
 
 /**
@@ -1524,7 +1603,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 48,
+      total_endpoints: 51,
       platforms: [
         {
           name: 'TikTok',
@@ -1717,6 +1796,24 @@ router.get('/platforms', async (req, res) => {
               description: 'Search YouTube videos',
               params: ['query', 'limit (optional)'],
               example: '?query=ai tutorial&limit=20',
+            },
+            {
+              path: '/api/scrape/youtube/shorts',
+              description: 'Get YouTube Shorts from channel',
+              params: ['channel_id', 'limit (optional)'],
+              example: '?channel_id=@MrBeast&limit=20',
+            },
+            {
+              path: '/api/scrape/youtube/shorts-paginated',
+              description: 'Get YouTube Shorts with pagination',
+              params: ['channel_id', 'limit (optional)', 'continuation_token (optional)'],
+              example: '?channel_id=@MrBeast&limit=20',
+            },
+            {
+              path: '/api/scrape/youtube/trending-shorts',
+              description: 'Get trending YouTube Shorts',
+              params: ['country (optional)', 'limit (optional)'],
+              example: '?country=US&limit=20',
             },
           ],
         },

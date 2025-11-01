@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 48 endpoints
+ * Comprehensive API documentation with all 51 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -326,6 +326,33 @@ export default function Documentation() {
         description: 'Search for YouTube videos by keyword',
         credits: 3,
         example: 'react tutorial'
+      },
+      {
+        id: 'youtube-shorts',
+        name: 'YouTube Shorts',
+        endpoint: '/api/scrape/youtube/shorts',
+        params: '?channel_id=:channel_id',
+        description: 'Get YouTube Shorts from a channel',
+        credits: 2,
+        example: '@MrBeast'
+      },
+      {
+        id: 'youtube-shorts-paginated',
+        name: 'YouTube Shorts Paginated',
+        endpoint: '/api/scrape/youtube/shorts-paginated',
+        params: '?channel_id=:channel_id&limit=20',
+        description: 'Get YouTube Shorts with pagination support',
+        credits: 2,
+        example: '@MrBeast'
+      },
+      {
+        id: 'youtube-trending-shorts',
+        name: 'YouTube Trending Shorts',
+        endpoint: '/api/scrape/youtube/trending-shorts',
+        params: '?country=US&limit=20',
+        description: 'Get trending YouTube Shorts by country',
+        credits: 3,
+        example: 'US'
       }
     ],
     twitter: [

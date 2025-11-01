@@ -80,12 +80,15 @@ The collection is organized by platform:
 - **Instagram Stories** - Get active Stories and highlights (1 credit)
 - **Instagram Hashtag** - Analyze hashtag performance (2 credits)
 
-### YouTube (5 endpoints)
+### YouTube (8 endpoints)
 - **YouTube Channel** - Get channel data (1 credit)
 - **YouTube Channel Videos** - Get channel videos (2 credits)
 - **YouTube Video** - Get video details (1 credit)
 - **YouTube Comments** - Get video comments (2 credits)
 - **YouTube Search** - Search videos (2 credits)
+- **YouTube Shorts** - Get channel Shorts (2 credits)
+- **YouTube Shorts Paginated** - Get Shorts with pagination (2 credits)
+- **YouTube Trending Shorts** - Get trending Shorts (3 credits)
 
 ### Twitter / X (3 endpoints)
 - **Twitter Profile** - Get profile data (1 credit)
@@ -120,7 +123,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 48 endpoints**
+**Total: 51 endpoints**
 
 ## Authentication
 
@@ -258,6 +261,13 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.5.0 (2025-11-01)
+- Added YouTube Shorts (3 new endpoints, 51 total)
+- NEW: YouTube Shorts, Shorts Paginated, Trending Shorts
+- Complete short-form video support for YouTube
+- Pagination with continuation tokens
+- Trending Shorts by country with statistics
 
 ### v1.4.0 (2025-11-01)
 - Added Bluesky platform (3 new endpoints, 48 total)
