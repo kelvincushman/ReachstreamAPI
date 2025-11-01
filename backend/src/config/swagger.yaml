@@ -872,6 +872,189 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/tiktok/song:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok song details
+      description: Retrieve detailed information about a specific TikTok song/music including statistics and metadata
+      parameters:
+        - name: song_id
+          in: query
+          required: true
+          description: TikTok song ID
+          schema:
+            type: string
+            example: "7234567890123456789"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      song_id:
+                        type: string
+                      title:
+                        type: string
+                      author:
+                        type: string
+                      album:
+                        type: string
+                      duration:
+                        type: integer
+                      duration_formatted:
+                        type: string
+                      is_original:
+                        type: boolean
+                      category:
+                        type: string
+                      cover_images:
+                        type: object
+                        properties:
+                          large:
+                            type: string
+                          medium:
+                            type: string
+                          thumb:
+                            type: string
+                      play_url:
+                        type: string
+                      statistics:
+                        type: object
+                        properties:
+                          video_count:
+                            type: integer
+                          video_count_formatted:
+                            type: string
+                          is_popular:
+                            type: boolean
+                          is_trending:
+                            type: boolean
+                      popularity_metrics:
+                        type: object
+                        properties:
+                          popularity_score:
+                            type: integer
+                          trending_rank:
+                            type: string
+                          engagement_level:
+                            type: string
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/song-videos:
+    get:
+      tags:
+        - TikTok
+      summary: Get videos using a song
+      description: Retrieve videos that use a specific TikTok song/music with engagement metrics
+      parameters:
+        - name: song_id
+          in: query
+          required: true
+          description: TikTok song ID
+          schema:
+            type: string
+            example: "7234567890123456789"
+        - name: limit
+          in: query
+          required: false
+          description: Number of videos to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      song_id:
+                        type: string
+                      song_info:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                          author:
+                            type: string
+                          cover:
+                            type: string
+                      total_videos_returned:
+                        type: integer
+                      videos:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            video_id:
+                              type: string
+                            description:
+                              type: string
+                            video_url:
+                              type: string
+                            author:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                nickname:
+                                  type: string
+                                verified:
+                                  type: boolean
+                            video_stats:
+                              type: object
+                              properties:
+                                play_count:
+                                  type: integer
+                                like_count:
+                                  type: integer
+                                comment_count:
+                                  type: integer
+                                share_count:
+                                  type: integer
+                            engagement_metrics:
+                              type: object
+                              properties:
+                                engagement_rate:
+                                  type: string
+                                like_rate:
+                                  type: string
+                      aggregate_stats:
+                        type: object
+                        properties:
+                          total_plays:
+                            type: integer
+                          total_likes:
+                            type: integer
+                          avg_plays_per_video:
+                            type: integer
+                          overall_engagement_rate:
+                            type: string
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== TikTok Shop Endpoints ====================
   /api/scrape/tiktok-shop/search:
     get:
@@ -1834,6 +2017,172 @@ paths:
                               type: string
                             views:
                               type: integer
+                      statistics:
+                        type: object
+                        properties:
+                          total_views:
+                            type: integer
+                          avg_views_per_video:
+                            type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/transcript:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube video transcript/captions
+      description: Retrieve video transcript with timestamps, supports multiple languages
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: YouTube video URL or video ID
+          schema:
+            type: string
+            example: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+        - name: language
+          in: query
+          required: false
+          description: Language code (default: en)
+          schema:
+            type: string
+            default: en
+            example: en
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      video_id:
+                        type: string
+                      video_url:
+                        type: string
+                      language:
+                        type: string
+                      language_name:
+                        type: string
+                      is_auto_generated:
+                        type: boolean
+                      segments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                            start:
+                              type: number
+                            duration:
+                              type: number
+                            end:
+                              type: number
+                      full_text:
+                        type: string
+                      statistics:
+                        type: object
+                        properties:
+                          total_segments:
+                            type: integer
+                          total_duration_seconds:
+                            type: integer
+                          word_count:
+                            type: integer
+                          avg_words_per_minute:
+                            type: integer
+                      available_languages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                            name:
+                              type: string
+                            is_auto_generated:
+                              type: boolean
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/search-hashtag:
+    get:
+      tags:
+        - YouTube
+      summary: Search YouTube videos by hashtag
+      description: Find videos on YouTube using a specific hashtag
+      parameters:
+        - name: hashtag
+          in: query
+          required: true
+          description: Hashtag to search (with or without #)
+          schema:
+            type: string
+            example: music
+        - name: limit
+          in: query
+          required: false
+          description: Number of results (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      hashtag:
+                        type: string
+                      hashtag_url:
+                        type: string
+                      total_results:
+                        type: integer
+                      videos:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            video_id:
+                              type: string
+                            title:
+                              type: string
+                            url:
+                              type: string
+                            thumbnail:
+                              type: string
+                            channel:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                verified:
+                                  type: boolean
+                            views:
+                              type: integer
+                            published:
+                              type: string
                       statistics:
                         type: object
                         properties:

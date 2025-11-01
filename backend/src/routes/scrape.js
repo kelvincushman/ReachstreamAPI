@@ -39,6 +39,10 @@ const { searchUsers: searchTikTokUsers } = require('../../scrapers/tiktok/search
 const { searchByKeyword: searchTikTokByKeyword } = require('../../scrapers/tiktok/search-keywords');
 const { getTrendingSongs: getTikTokTrendingSongs } = require('../../scrapers/tiktok/trending-songs');
 
+// TikTok music/audio scrapers
+const { getSongDetails: getTikTokSongDetails } = require('../../scrapers/tiktok/song-details');
+const { getSongVideos: getTikTokSongVideos } = require('../../scrapers/tiktok/song-videos');
+
 // Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
 const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/posts');
@@ -62,6 +66,8 @@ const { scrapeShortsPaginated: scrapeYouTubeShortsPaginated } = require('../../s
 const { scrapeTrendingShorts: scrapeYouTubeTrendingShorts } = require('../../scrapers/youtube/trending-shorts');
 const { scrapeChannelStats: scrapeYouTubeChannelStats } = require('../../scrapers/youtube/stats');
 const { scrapePlaylist: scrapeYouTubePlaylist } = require('../../scrapers/youtube/playlist');
+const { scrapeTranscript: scrapeYouTubeTranscript } = require('../../scrapers/youtube/transcript');
+const { searchHashtag: searchYouTubeHashtag } = require('../../scrapers/youtube/search-hashtag');
 
 // Twitter scrapers
 const { scrapeProfile: scrapeTwitterProfile } = require('../../scrapers/twitter/profile');
@@ -707,6 +713,68 @@ router.get('/tiktok/trending-songs', verifyApiKey, logApiRequest, afterRequest('
   }
 });
 
+/**
+ * GET /api/scrape/tiktok/song
+ * Get TikTok song/music details
+ */
+router.get('/tiktok/song', verifyApiKey, logApiRequest, afterRequest('tiktok', 'song'), async (req, res) => {
+  try {
+    const { song_id } = req.query;
+
+    if (!song_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: song_id',
+        example: '/api/scrape/tiktok/song?song_id=7234567890123456789',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await getTikTokSongDetails(song_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok song details error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get TikTok song details',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/song-videos
+ * Get videos using a specific TikTok song
+ */
+router.get('/tiktok/song-videos', verifyApiKey, logApiRequest, afterRequest('tiktok', 'song-videos'), async (req, res) => {
+  try {
+    const { song_id, limit } = req.query;
+
+    if (!song_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: song_id',
+        example: '/api/scrape/tiktok/song-videos?song_id=7234567890123456789&limit=20',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await getTikTokSongVideos(song_id, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok song videos error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get TikTok song videos',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Instagram Routes ====================
 
 /**
@@ -1270,6 +1338,68 @@ router.get('/youtube/playlist', verifyApiKey, logApiRequest, afterRequest('youtu
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape YouTube playlist',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/transcript
+ * Scrape YouTube video transcript/captions
+ */
+router.get('/youtube/transcript', verifyApiKey, logApiRequest, afterRequest('youtube', 'transcript'), async (req, res) => {
+  try {
+    const { url, language } = req.query;
+
+    if (!url) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: url',
+        example: '/api/scrape/youtube/transcript?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&language=en',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await scrapeYouTubeTranscript(url, language || 'en');
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube transcript scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube transcript',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/search-hashtag
+ * Search YouTube videos by hashtag
+ */
+router.get('/youtube/search-hashtag', verifyApiKey, logApiRequest, afterRequest('youtube', 'search-hashtag'), async (req, res) => {
+  try {
+    const { hashtag, limit } = req.query;
+
+    if (!hashtag) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: hashtag',
+        example: '/api/scrape/youtube/search-hashtag?hashtag=music&limit=20',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await searchYouTubeHashtag(hashtag, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube hashtag search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search YouTube hashtag',
       message: error.message,
     });
   }
@@ -2050,6 +2180,18 @@ router.get('/platforms', async (req, res) => {
               params: ['limit (optional)'],
               example: '?limit=20',
             },
+            {
+              path: '/api/scrape/tiktok/song',
+              description: 'Get detailed information about a specific TikTok song/music',
+              params: ['song_id'],
+              example: '?song_id=7234567890123456789',
+            },
+            {
+              path: '/api/scrape/tiktok/song-videos',
+              description: 'Get videos using a specific TikTok song/music',
+              params: ['song_id', 'limit (optional, max: 50)'],
+              example: '?song_id=7234567890123456789&limit=20',
+            },
           ],
         },
         {
@@ -2202,6 +2344,18 @@ router.get('/platforms', async (req, res) => {
               description: 'Get YouTube playlist videos with statistics',
               params: ['playlist_id', 'limit (optional)'],
               example: '?playlist_id=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf&limit=20',
+            },
+            {
+              path: '/api/scrape/youtube/transcript',
+              description: 'Get YouTube video transcript/captions with timestamps',
+              params: ['url (video URL or ID)', 'language (optional, default: en)'],
+              example: '?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&language=en',
+            },
+            {
+              path: '/api/scrape/youtube/search-hashtag',
+              description: 'Search YouTube videos by hashtag',
+              params: ['hashtag', 'limit (optional, max: 50)'],
+              example: '?hashtag=music&limit=20',
             },
           ],
         },

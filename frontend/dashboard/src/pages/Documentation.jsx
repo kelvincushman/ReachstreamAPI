@@ -203,6 +203,24 @@ export default function Documentation() {
         description: 'Get trending songs and audio on TikTok with video usage statistics',
         credits: 2,
         example: ''
+      },
+      {
+        id: 'tiktok-song',
+        name: 'TikTok Song Details',
+        endpoint: '/api/scrape/tiktok/song',
+        params: '?song_id=:song_id',
+        description: 'Get detailed information about a specific TikTok song including popularity metrics',
+        credits: 2,
+        example: '7234567890123456789'
+      },
+      {
+        id: 'tiktok-song-videos',
+        name: 'TikTok Song Videos',
+        endpoint: '/api/scrape/tiktok/song-videos',
+        params: '?song_id=:song_id&limit=20',
+        description: 'Get videos using a specific TikTok song with engagement statistics',
+        credits: 2,
+        example: '7234567890123456789'
       }
     ],
     'tiktok-shop': [
@@ -416,6 +434,24 @@ export default function Documentation() {
         description: 'Get videos from a YouTube playlist with statistics',
         credits: 2,
         example: 'PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf'
+      },
+      {
+        id: 'youtube-transcript',
+        name: 'YouTube Transcript',
+        endpoint: '/api/scrape/youtube/transcript',
+        params: '?url=:url&language=en',
+        description: 'Get video transcript/captions with timestamps and multi-language support',
+        credits: 2,
+        example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+      },
+      {
+        id: 'youtube-search-hashtag',
+        name: 'YouTube Hashtag Search',
+        endpoint: '/api/scrape/youtube/search-hashtag',
+        params: '?hashtag=:hashtag&limit=20',
+        description: 'Search YouTube videos by hashtag with view statistics',
+        credits: 2,
+        example: 'music'
       }
     ],
     twitter: [

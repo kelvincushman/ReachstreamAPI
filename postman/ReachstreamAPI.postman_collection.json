@@ -437,6 +437,53 @@
             "description": "Get trending songs and audio on TikTok with video usage statistics.\n\nCost: 2 credits"
           },
           "response": []
+        },
+        {
+          "name": "TikTok Song Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/song?song_id=7234567890123456789",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "song"],
+              "query": [
+                {
+                  "key": "song_id",
+                  "value": "7234567890123456789",
+                  "description": "TikTok song ID"
+                }
+              ]
+            },
+            "description": "Get detailed information about a specific TikTok song/music including statistics and popularity metrics.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Song Videos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/song-videos?song_id=7234567890123456789&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "song-videos"],
+              "query": [
+                {
+                  "key": "song_id",
+                  "value": "7234567890123456789",
+                  "description": "TikTok song ID"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of videos to fetch (optional, 1-50, default 20)"
+                }
+              ]
+            },
+            "description": "Get videos using a specific TikTok song with engagement statistics and aggregate metrics.\n\nCost: 2 credits"
+          },
+          "response": []
         }
       ],
       "description": "TikTok scraping endpoints for profiles, videos, hashtags, search, sounds, analytics, demographics, transcripts, social graph, and more."
@@ -1035,6 +1082,58 @@
               ]
             },
             "description": "Get videos from a YouTube playlist with statistics.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Transcript",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/transcript?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&language=en",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "transcript"],
+              "query": [
+                {
+                  "key": "url",
+                  "value": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                  "description": "YouTube video URL or video ID"
+                },
+                {
+                  "key": "language",
+                  "value": "en",
+                  "description": "Language code (optional, default: en)"
+                }
+              ]
+            },
+            "description": "Get YouTube video transcript/captions with timestamps. Supports multiple languages with automatic fallback.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Hashtag Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/search-hashtag?hashtag=music&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "search-hashtag"],
+              "query": [
+                {
+                  "key": "hashtag",
+                  "value": "music",
+                  "description": "Hashtag to search (with or without #)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, 1-50, default 20)"
+                }
+              ]
+            },
+            "description": "Search YouTube videos by hashtag and get view statistics.\n\nCost: 2 credits"
           },
           "response": []
         }
