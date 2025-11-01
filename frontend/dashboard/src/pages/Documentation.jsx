@@ -21,6 +21,7 @@ export default function Documentation() {
   const [bookmarked, setBookmarked] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     tiktok: true,
+    'tiktok-shop': false,
     instagram: false,
     youtube: false,
     twitter: false,
@@ -110,6 +111,35 @@ export default function Documentation() {
         description: 'Get currently trending TikTok videos',
         credits: 3,
         example: null
+      }
+    ],
+    'tiktok-shop': [
+      {
+        id: 'tiktok-shop-search',
+        name: 'TikTok Shop Search',
+        endpoint: '/api/scrape/tiktok-shop/search',
+        params: '?query=:query&limit=20',
+        description: 'Search for products on TikTok Shop with pricing, ratings, and seller information',
+        credits: 1,
+        example: 'sneakers'
+      },
+      {
+        id: 'tiktok-shop-product',
+        name: 'TikTok Shop Product',
+        endpoint: '/api/scrape/tiktok-shop/product',
+        params: '?product_id=:product_id',
+        description: 'Get detailed product information including variants, shipping, and seller details',
+        credits: 1,
+        example: '1234567890'
+      },
+      {
+        id: 'tiktok-shop-reviews',
+        name: 'TikTok Shop Reviews',
+        endpoint: '/api/scrape/tiktok-shop/reviews',
+        params: '?product_id=:product_id&limit=50',
+        description: 'Retrieve product reviews with ratings, images, and verified purchase status',
+        credits: 2,
+        example: '1234567890'
       }
     ],
     instagram: [
@@ -299,6 +329,7 @@ export default function Documentation() {
 
   const platformNames = {
     tiktok: 'TikTok',
+    'tiktok-shop': 'TikTok Shop',
     instagram: 'Instagram',
     youtube: 'YouTube',
     twitter: 'Twitter / X',
@@ -309,6 +340,7 @@ export default function Documentation() {
 
   const platformColors = {
     tiktok: 'border-pink-500',
+    'tiktok-shop': 'border-pink-600',
     instagram: 'border-purple-500',
     youtube: 'border-red-500',
     twitter: 'border-blue-500',
@@ -353,7 +385,7 @@ export default function Documentation() {
         <ol className="list-decimal list-inside space-y-2 text-gray-700">
           <li>Create an API key in the <a href="/api-keys" className="text-indigo-600 hover:underline">API Keys</a> section</li>
           <li>Include the API key in your request headers as <code className="px-2 py-1 bg-gray-100 rounded">x-api-key</code></li>
-          <li>Make requests to any of the 27 endpoints below</li>
+          <li>Make requests to any of the 30 endpoints below</li>
           <li>Each request costs 1-3 credits depending on the endpoint</li>
         </ol>
       </div>
@@ -396,7 +428,7 @@ export default function Documentation() {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center gap-3 mb-6">
           <Book className="h-6 w-6 text-indigo-600" />
-          <h2 className="text-xl font-bold text-gray-900">Available Endpoints (27 Total)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Available Endpoints (30 Total)</h2>
         </div>
 
         <div className="space-y-4">

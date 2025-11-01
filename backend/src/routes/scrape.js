@@ -18,6 +18,11 @@ const { scrapeVideo: scrapeTikTokVideo } = require('../../scrapers/tiktok/video'
 const { scrapeTrending: scrapeTikTokTrending } = require('../../scrapers/tiktok/trending');
 const { scrapeComments: scrapeTikTokComments } = require('../../scrapers/tiktok/comments');
 
+// TikTok Shop scrapers
+const { searchShop: searchTikTokShop } = require('../../scrapers/tiktok/shop-search');
+const { scrapeProduct: scrapeTikTokShopProduct } = require('../../scrapers/tiktok/shop-product');
+const { scrapeReviews: scrapeTikTokShopReviews } = require('../../scrapers/tiktok/shop-reviews');
+
 // Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
 const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/posts');
@@ -274,6 +279,97 @@ router.get('/tiktok/comments', verifyApiKey, logApiRequest, afterRequest('tiktok
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape TikTok comments',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== TikTok Shop Routes ====================
+
+/**
+ * GET /api/scrape/tiktok-shop/search
+ * Search TikTok Shop products
+ */
+router.get('/tiktok-shop/search', verifyApiKey, logApiRequest, afterRequest('tiktok-shop', 'search'), async (req, res) => {
+  try {
+    const { query: searchQuery, cursor, limit } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/tiktok-shop/search?query=sneakers&limit=20',
+      });
+    }
+
+    const result = await searchTikTokShop(searchQuery, cursor || null, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok Shop search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search TikTok Shop',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok-shop/product
+ * Scrape TikTok Shop product details
+ */
+router.get('/tiktok-shop/product', verifyApiKey, logApiRequest, afterRequest('tiktok-shop', 'product'), async (req, res) => {
+  try {
+    const { product_id } = req.query;
+
+    if (!product_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: product_id',
+        example: '/api/scrape/tiktok-shop/product?product_id=1234567890',
+      });
+    }
+
+    const result = await scrapeTikTokShopProduct(product_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok Shop product scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok Shop product',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok-shop/reviews
+ * Scrape TikTok Shop product reviews
+ */
+router.get('/tiktok-shop/reviews', verifyApiKey, logApiRequest, afterRequest('tiktok-shop', 'reviews'), async (req, res) => {
+  try {
+    const { product_id, limit, cursor, filter } = req.query;
+
+    if (!product_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: product_id',
+        example: '/api/scrape/tiktok-shop/reviews?product_id=1234567890&limit=50&filter=all',
+      });
+    }
+
+    const result = await scrapeTikTokShopReviews(
+      product_id,
+      limit ? parseInt(limit, 10) : 50,
+      cursor || null,
+      filter || 'all'
+    );
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok Shop reviews scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok Shop reviews',
       message: error.message,
     });
   }
@@ -887,7 +983,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 29,
+      total_endpoints: 32,
       platforms: [
         {
           name: 'TikTok',
@@ -927,6 +1023,29 @@ router.get('/platforms', async (req, res) => {
               description: 'Get TikTok video comments',
               params: ['video_id', 'limit (optional)'],
               example: '?video_id=7234567890123456789&limit=50',
+            },
+          ],
+        },
+        {
+          name: 'TikTok Shop',
+          endpoints: [
+            {
+              path: '/api/scrape/tiktok-shop/search',
+              description: 'Search TikTok Shop products',
+              params: ['query', 'cursor (optional)', 'limit (optional)'],
+              example: '?query=sneakers&limit=20',
+            },
+            {
+              path: '/api/scrape/tiktok-shop/product',
+              description: 'Get TikTok Shop product details',
+              params: ['product_id'],
+              example: '?product_id=1234567890',
+            },
+            {
+              path: '/api/scrape/tiktok-shop/reviews',
+              description: 'Get TikTok Shop product reviews',
+              params: ['product_id', 'limit (optional)', 'cursor (optional)', 'filter (optional)'],
+              example: '?product_id=1234567890&limit=50&filter=all',
             },
           ],
         },
