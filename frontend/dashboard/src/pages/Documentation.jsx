@@ -111,6 +111,33 @@ export default function Documentation() {
         description: 'Get currently trending TikTok videos',
         credits: 3,
         example: null
+      },
+      {
+        id: 'tiktok-search',
+        name: 'TikTok Search',
+        endpoint: '/api/scrape/tiktok/search',
+        params: '?query=:query&type=videos',
+        description: 'Search TikTok for users, videos, hashtags, and sounds',
+        credits: 2,
+        example: 'dance'
+      },
+      {
+        id: 'tiktok-sound',
+        name: 'TikTok Sound',
+        endpoint: '/api/scrape/tiktok/sound',
+        params: '?sound_id=:sound_id',
+        description: 'Get detailed sound/music information including usage stats and top videos',
+        credits: 1,
+        example: '1234567890'
+      },
+      {
+        id: 'tiktok-analytics',
+        name: 'TikTok Analytics',
+        endpoint: '/api/scrape/tiktok/analytics',
+        params: '?username=:username',
+        description: 'Get advanced analytics with engagement rate, growth metrics, and performance indicators',
+        credits: 2,
+        example: 'charlidamelio'
       }
     ],
     'tiktok-shop': [
@@ -385,7 +412,7 @@ export default function Documentation() {
         <ol className="list-decimal list-inside space-y-2 text-gray-700">
           <li>Create an API key in the <a href="/api-keys" className="text-indigo-600 hover:underline">API Keys</a> section</li>
           <li>Include the API key in your request headers as <code className="px-2 py-1 bg-gray-100 rounded">x-api-key</code></li>
-          <li>Make requests to any of the 30 endpoints below</li>
+          <li>Make requests to any of the 33 endpoints below</li>
           <li>Each request costs 1-3 credits depending on the endpoint</li>
         </ol>
       </div>
@@ -428,7 +455,7 @@ export default function Documentation() {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center gap-3 mb-6">
           <Book className="h-6 w-6 text-indigo-600" />
-          <h2 className="text-xl font-bold text-gray-900">Available Endpoints (30 Total)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Available Endpoints (33 Total)</h2>
         </div>
 
         <div className="space-y-4">

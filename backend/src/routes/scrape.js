@@ -23,6 +23,11 @@ const { searchShop: searchTikTokShop } = require('../../scrapers/tiktok/shop-sea
 const { scrapeProduct: scrapeTikTokShopProduct } = require('../../scrapers/tiktok/shop-product');
 const { scrapeReviews: scrapeTikTokShopReviews } = require('../../scrapers/tiktok/shop-reviews');
 
+// TikTok enhancement scrapers
+const { searchTikTok } = require('../../scrapers/tiktok/search');
+const { scrapeSound: scrapeTikTokSound } = require('../../scrapers/tiktok/sound');
+const { scrapeAnalytics: scrapeTikTokAnalytics } = require('../../scrapers/tiktok/analytics');
+
 // Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
 const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/posts');
@@ -370,6 +375,97 @@ router.get('/tiktok-shop/reviews', verifyApiKey, logApiRequest, afterRequest('ti
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape TikTok Shop reviews',
+      message: error.message,
+    });
+  }
+});
+
+// ==================== TikTok Enhancement Routes ====================
+
+/**
+ * GET /api/scrape/tiktok/search
+ * Search TikTok for users, videos, hashtags, sounds
+ */
+router.get('/tiktok/search', verifyApiKey, logApiRequest, afterRequest('tiktok', 'search'), async (req, res) => {
+  try {
+    const { query: searchQuery, type, limit, cursor } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/tiktok/search?query=dance&type=videos&limit=20',
+      });
+    }
+
+    const result = await searchTikTok(
+      searchQuery,
+      type || 'all',
+      limit ? parseInt(limit, 10) : 20,
+      cursor || null
+    );
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search TikTok',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/sound
+ * Scrape TikTok sound/music details
+ */
+router.get('/tiktok/sound', verifyApiKey, logApiRequest, afterRequest('tiktok', 'sound'), async (req, res) => {
+  try {
+    const { sound_id } = req.query;
+
+    if (!sound_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: sound_id',
+        example: '/api/scrape/tiktok/sound?sound_id=1234567890',
+      });
+    }
+
+    const result = await scrapeTikTokSound(sound_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok sound scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok sound',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/analytics
+ * Get TikTok user analytics with engagement metrics
+ */
+router.get('/tiktok/analytics', verifyApiKey, logApiRequest, afterRequest('tiktok', 'analytics'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/tiktok/analytics?username=charlidamelio',
+      });
+    }
+
+    const result = await scrapeTikTokAnalytics(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok analytics scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok analytics',
       message: error.message,
     });
   }
@@ -983,7 +1079,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 32,
+      total_endpoints: 35,
       platforms: [
         {
           name: 'TikTok',
@@ -1023,6 +1119,24 @@ router.get('/platforms', async (req, res) => {
               description: 'Get TikTok video comments',
               params: ['video_id', 'limit (optional)'],
               example: '?video_id=7234567890123456789&limit=50',
+            },
+            {
+              path: '/api/scrape/tiktok/search',
+              description: 'Search TikTok for users, videos, hashtags, sounds',
+              params: ['query', 'type (optional)', 'limit (optional)', 'cursor (optional)'],
+              example: '?query=dance&type=videos&limit=20',
+            },
+            {
+              path: '/api/scrape/tiktok/sound',
+              description: 'Get TikTok sound/music details',
+              params: ['sound_id'],
+              example: '?sound_id=1234567890',
+            },
+            {
+              path: '/api/scrape/tiktok/analytics',
+              description: 'Get TikTok user analytics with engagement metrics',
+              params: ['username'],
+              example: '?username=charlidamelio',
             },
           ],
         },
