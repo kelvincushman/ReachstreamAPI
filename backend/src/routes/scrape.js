@@ -83,6 +83,12 @@ const { scrapeProfile: scrapeBlueskyProfile } = require('../../scrapers/bluesky/
 const { scrapePosts: scrapeBlueskyPosts } = require('../../scrapers/bluesky/posts');
 const { scrapePost: scrapeBlueskyPost } = require('../../scrapers/bluesky/post');
 
+// Pinterest scrapers
+const { searchPins: searchPinterestPins } = require('../../scrapers/pinterest/search');
+const { getPin: getPinterestPin } = require('../../scrapers/pinterest/pin');
+const { getUserBoards: getPinterestBoards } = require('../../scrapers/pinterest/boards');
+const { getBoardDetails: getPinterestBoardDetails } = require('../../scrapers/pinterest/board');
+
 /**
  * Middleware to log API requests
  */
@@ -1543,6 +1549,128 @@ router.get('/bluesky/post', verifyApiKey, logApiRequest, afterRequest('bluesky',
   }
 });
 
+// ==================== Pinterest Routes ====================
+
+/**
+ * GET /api/scrape/pinterest/search
+ * Search Pinterest pins
+ */
+router.get('/pinterest/search', verifyApiKey, logApiRequest, afterRequest('pinterest', 'search'), async (req, res) => {
+  try {
+    const { query, limit } = req.query;
+
+    if (!query) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: query',
+        example: '/api/scrape/pinterest/search?query=home decor&limit=20',
+      });
+    }
+
+    const result = await searchPinterestPins(query, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Pinterest search error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to search Pinterest',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/pinterest/pin
+ * Get Pinterest pin details
+ */
+router.get('/pinterest/pin', verifyApiKey, logApiRequest, afterRequest('pinterest', 'pin'), async (req, res) => {
+  try {
+    const { pin_id } = req.query;
+
+    if (!pin_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: pin_id',
+        example: '/api/scrape/pinterest/pin?pin_id=1234567890',
+      });
+    }
+
+    const result = await getPinterestPin(pin_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Pinterest pin error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get Pinterest pin',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/pinterest/boards
+ * Get user's Pinterest boards
+ */
+router.get('/pinterest/boards', verifyApiKey, logApiRequest, afterRequest('pinterest', 'boards'), async (req, res) => {
+  try {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/pinterest/boards?username=pinterest',
+      });
+    }
+
+    const result = await getPinterestBoards(username);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Pinterest boards error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get Pinterest boards',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/pinterest/board
+ * Get Pinterest board details
+ */
+router.get('/pinterest/board', verifyApiKey, logApiRequest, afterRequest('pinterest', 'board'), async (req, res) => {
+  try {
+    const { username, board_slug, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/pinterest/board?username=pinterest&board_slug=diy-projects&limit=20',
+      });
+    }
+
+    if (!board_slug) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: board_slug',
+        example: '/api/scrape/pinterest/board?username=pinterest&board_slug=diy-projects&limit=20',
+      });
+    }
+
+    const result = await getPinterestBoardDetails(username, board_slug, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Pinterest board details error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to get Pinterest board details',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== General Stats Route ====================
 
 /**
@@ -1603,7 +1731,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 51,
+      total_endpoints: 55,
       platforms: [
         {
           name: 'TikTok',
@@ -1946,6 +2074,35 @@ router.get('/platforms', async (req, res) => {
               description: 'Get Bluesky single post details',
               params: ['post_uri or url'],
               example: '?url=https://bsky.app/profile/user.bsky.social/post/3k7...',
+            },
+          ],
+        },
+        {
+          name: 'Pinterest',
+          endpoints: [
+            {
+              path: '/api/scrape/pinterest/search',
+              description: 'Search Pinterest pins by keyword',
+              params: ['query', 'limit (optional)'],
+              example: '?query=home decor&limit=20',
+            },
+            {
+              path: '/api/scrape/pinterest/pin',
+              description: 'Get Pinterest pin details',
+              params: ['pin_id'],
+              example: '?pin_id=1234567890',
+            },
+            {
+              path: '/api/scrape/pinterest/boards',
+              description: 'Get user\'s Pinterest boards',
+              params: ['username'],
+              example: '?username=pinterest',
+            },
+            {
+              path: '/api/scrape/pinterest/board',
+              description: 'Get Pinterest board details with pins',
+              params: ['username', 'board_slug', 'limit (optional)'],
+              example: '?username=pinterest&board_slug=diy-projects&limit=20',
             },
           ],
         },
