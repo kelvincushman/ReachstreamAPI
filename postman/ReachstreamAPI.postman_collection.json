@@ -990,6 +990,53 @@
             "description": "Get trending YouTube Shorts videos by country with statistics.\n\nCost: 3 credits"
           },
           "response": []
+        },
+        {
+          "name": "YouTube Channel Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/stats?channel_id=@MrBeast",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "stats"],
+              "query": [
+                {
+                  "key": "channel_id",
+                  "value": "@MrBeast",
+                  "description": "Channel ID or @handle"
+                }
+              ]
+            },
+            "description": "Get comprehensive channel statistics and analytics with performance insights.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "YouTube Playlist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/youtube/playlist?playlist_id=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "youtube", "playlist"],
+              "query": [
+                {
+                  "key": "playlist_id",
+                  "value": "PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf",
+                  "description": "YouTube playlist ID"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of videos (optional, 1-100, default 20)"
+                }
+              ]
+            },
+            "description": "Get videos from a YouTube playlist with statistics.\n\nCost: 2 credits"
+          },
+          "response": []
         }
       ],
       "description": "YouTube scraping endpoints for channels, videos, comments, search, and Shorts."

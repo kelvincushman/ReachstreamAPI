@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 60 endpoints
+ * Comprehensive API documentation with all 62 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -398,6 +398,24 @@ export default function Documentation() {
         description: 'Get trending YouTube Shorts by country',
         credits: 3,
         example: 'US'
+      },
+      {
+        id: 'youtube-stats',
+        name: 'YouTube Channel Stats',
+        endpoint: '/api/scrape/youtube/stats',
+        params: '?channel_id=:channel_id',
+        description: 'Get comprehensive channel statistics and analytics with performance insights',
+        credits: 2,
+        example: '@MrBeast'
+      },
+      {
+        id: 'youtube-playlist',
+        name: 'YouTube Playlist',
+        endpoint: '/api/scrape/youtube/playlist',
+        params: '?playlist_id=:playlist_id&limit=20',
+        description: 'Get videos from a YouTube playlist with statistics',
+        credits: 2,
+        example: 'PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf'
       }
     ],
     twitter: [

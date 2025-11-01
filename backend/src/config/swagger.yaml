@@ -1714,6 +1714,138 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/youtube/stats:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube channel statistics
+      description: Retrieve comprehensive channel statistics and analytics including engagement metrics and performance insights
+      parameters:
+        - name: channel_id
+          in: query
+          required: true
+          description: YouTube channel ID or @handle
+          schema:
+            type: string
+            example: "@MrBeast"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      channel_id:
+                        type: string
+                      channel_name:
+                        type: string
+                      subscriber_count:
+                        type: integer
+                      video_count:
+                        type: integer
+                      statistics:
+                        type: object
+                        properties:
+                          avg_views_per_video:
+                            type: integer
+                          max_views:
+                            type: integer
+                          estimated_total_views:
+                            type: integer
+                          subscriber_engagement_rate:
+                            type: number
+                      performance_insights:
+                        type: object
+                        properties:
+                          consistency_score:
+                            type: number
+                          growth_potential:
+                            type: string
+                          content_performance:
+                            type: string
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/playlist:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube playlist videos
+      description: Retrieve videos from a YouTube playlist with statistics and metadata
+      parameters:
+        - name: playlist_id
+          in: query
+          required: true
+          description: YouTube playlist ID
+          schema:
+            type: string
+            example: PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
+        - name: limit
+          in: query
+          required: false
+          description: Number of videos to fetch (1-100)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      playlist_id:
+                        type: string
+                      title:
+                        type: string
+                      total_videos:
+                        type: integer
+                      videos_returned:
+                        type: integer
+                      videos:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            video_id:
+                              type: string
+                            title:
+                              type: string
+                            url:
+                              type: string
+                            thumbnail:
+                              type: string
+                            views:
+                              type: integer
+                      statistics:
+                        type: object
+                        properties:
+                          total_views:
+                            type: integer
+                          avg_views_per_video:
+                            type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== Twitter Endpoints ====================
   /api/scrape/twitter/profile:
     get:

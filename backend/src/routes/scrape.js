@@ -60,6 +60,8 @@ const { searchVideos: searchYouTubeVideos } = require('../../scrapers/youtube/se
 const { scrapeShorts: scrapeYouTubeShorts } = require('../../scrapers/youtube/shorts');
 const { scrapeShortsPaginated: scrapeYouTubeShortsPaginated } = require('../../scrapers/youtube/shorts-paginated');
 const { scrapeTrendingShorts: scrapeYouTubeTrendingShorts } = require('../../scrapers/youtube/trending-shorts');
+const { scrapeChannelStats: scrapeYouTubeChannelStats } = require('../../scrapers/youtube/stats');
+const { scrapePlaylist: scrapeYouTubePlaylist } = require('../../scrapers/youtube/playlist');
 
 // Twitter scrapers
 const { scrapeProfile: scrapeTwitterProfile } = require('../../scrapers/twitter/profile');
@@ -1211,6 +1213,68 @@ router.get('/youtube/trending-shorts', verifyApiKey, logApiRequest, afterRequest
   }
 });
 
+/**
+ * GET /api/scrape/youtube/stats
+ * Get comprehensive YouTube channel statistics
+ */
+router.get('/youtube/stats', verifyApiKey, logApiRequest, afterRequest('youtube', 'stats'), async (req, res) => {
+  try {
+    const { channel_id } = req.query;
+
+    if (!channel_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: channel_id',
+        example: '/api/scrape/youtube/stats?channel_id=@MrBeast or channel_id=UCX6OQ3DkcsbYNE6H8uQQuVA',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await scrapeYouTubeChannelStats(channel_id);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube channel stats scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube channel stats',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/youtube/playlist
+ * Get YouTube playlist videos
+ */
+router.get('/youtube/playlist', verifyApiKey, logApiRequest, afterRequest('youtube', 'playlist'), async (req, res) => {
+  try {
+    const { playlist_id, limit } = req.query;
+
+    if (!playlist_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: playlist_id',
+        example: '/api/scrape/youtube/playlist?playlist_id=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf&limit=20',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await scrapeYouTubePlaylist(playlist_id, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('YouTube playlist scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape YouTube playlist',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== Twitter/X Routes ====================
 
 /**
@@ -1885,7 +1949,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 60,
+      total_endpoints: 62,
       platforms: [
         {
           name: 'TikTok',
@@ -2126,6 +2190,18 @@ router.get('/platforms', async (req, res) => {
               description: 'Get trending YouTube Shorts',
               params: ['country (optional)', 'limit (optional)'],
               example: '?country=US&limit=20',
+            },
+            {
+              path: '/api/scrape/youtube/stats',
+              description: 'Get comprehensive YouTube channel statistics and analytics',
+              params: ['channel_id (ID or @handle)'],
+              example: '?channel_id=@MrBeast',
+            },
+            {
+              path: '/api/scrape/youtube/playlist',
+              description: 'Get YouTube playlist videos with statistics',
+              params: ['playlist_id', 'limit (optional)'],
+              example: '?playlist_id=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf&limit=20',
             },
           ],
         },

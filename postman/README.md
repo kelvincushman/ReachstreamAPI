@@ -85,7 +85,7 @@ The collection is organized by platform:
 - **Instagram Video (IGTV)** - Get IGTV videos with performance metrics (2 credits)
 - **Instagram Story Highlights** - Get Story Highlights from profile (2 credits)
 
-### YouTube (8 endpoints)
+### YouTube (10 endpoints)
 - **YouTube Channel** - Get channel data (1 credit)
 - **YouTube Channel Videos** - Get channel videos (2 credits)
 - **YouTube Video** - Get video details (1 credit)
@@ -94,6 +94,8 @@ The collection is organized by platform:
 - **YouTube Shorts** - Get channel Shorts (2 credits)
 - **YouTube Shorts Paginated** - Get Shorts with pagination (2 credits)
 - **YouTube Trending Shorts** - Get trending Shorts (3 credits)
+- **YouTube Channel Stats** - Get comprehensive channel statistics and analytics (2 credits)
+- **YouTube Playlist** - Get playlist videos with statistics (2 credits)
 
 ### Twitter / X (3 endpoints)
 - **Twitter Profile** - Get profile data (1 credit)
@@ -128,7 +130,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 60 endpoints**
+**Total: 62 endpoints**
 
 ## Authentication
 
@@ -266,6 +268,13 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.8.0 (2025-11-01) - OPTION 1 COMPLETE!
+- Added YouTube Enhanced Analytics (2 new endpoints, 62 total)
+- NEW: YouTube Channel Stats - Comprehensive statistics and performance insights
+- NEW: YouTube Playlist - Get playlist videos with analytics
+- Complete core platform enhancements across TikTok, Instagram, and YouTube
+- 🎉 Achieved target: 55 → 62 endpoints (+7 new endpoints)
 
 ### v1.7.0 (2025-11-01)
 - Added Instagram Enhanced Content (2 new endpoints, 60 total)
