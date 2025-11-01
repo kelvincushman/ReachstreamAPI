@@ -17,6 +17,7 @@ const authRoutes = require('./routes/auth');
 const creditsRoutes = require('./routes/credits');
 const apiKeysRoutes = require('./routes/apiKeys');
 const scrapeRoutes = require('./routes/scrape');
+const swaggerRoutes = require('./routes/swagger');
 
 // Initialize Express app
 const app = express();
@@ -79,6 +80,7 @@ app.get('/', (req, res) => {
       apiKeys: '/api/keys',
       scrape: '/api/scrape',
       docs: '/api/docs',
+      swagger: '/api-docs',
     },
   });
 });
@@ -100,6 +102,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/credits', creditsRoutes);
 app.use('/api/keys', apiKeysRoutes);
 app.use('/api/scrape', scrapeRoutes);
+
+// Swagger API documentation UI
+app.use('/api-docs', swaggerRoutes);
 
 // API documentation route
 app.get('/api/docs', (req, res) => {
@@ -216,7 +221,8 @@ const startServer = async () => {
       console.log('═══════════════════════════════════════════════════════');
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🌐 Server URL: http://localhost:${PORT}`);
-      console.log(`📚 API Docs: http://localhost:${PORT}/api/docs`);
+      console.log(`📚 API Docs (JSON): http://localhost:${PORT}/api/docs`);
+      console.log(`📖 Swagger UI: http://localhost:${PORT}/api-docs`);
       console.log(`❤️  Health Check: http://localhost:${PORT}/health`);
       console.log('═══════════════════════════════════════════════════════');
       console.log('');

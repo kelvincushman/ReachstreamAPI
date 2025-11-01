@@ -1,0 +1,1008 @@
+openapi: 3.0.0
+info:
+  title: ReachstreamAPI
+  description: Real-Time Social Media Data API - Extract public data from TikTok, Instagram, YouTube, Twitter, Facebook, LinkedIn, and Reddit
+  version: 1.0.0
+  contact:
+    name: ReachstreamAPI Support
+    email: support@reachstreamapi.com
+    url: https://reachstream.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.reachstream.com
+    description: Production server
+  - url: http://localhost:3000
+    description: Development server
+
+tags:
+  - name: TikTok
+    description: TikTok scraping endpoints
+  - name: TikTok Shop
+    description: TikTok Shop e-commerce endpoints
+  - name: Instagram
+    description: Instagram scraping endpoints
+  - name: YouTube
+    description: YouTube scraping endpoints
+  - name: Twitter
+    description: Twitter/X scraping endpoints
+  - name: LinkedIn
+    description: LinkedIn scraping endpoints
+  - name: Facebook
+    description: Facebook scraping endpoints
+  - name: Reddit
+    description: Reddit scraping endpoints
+  - name: General
+    description: General API endpoints
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key for authentication
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message"
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+
+    Metadata:
+      type: object
+      properties:
+        response_time_ms:
+          type: integer
+          example: 2341
+        proxy_used:
+          type: boolean
+          example: true
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-10-31T17:00:00Z"
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  # ==================== TikTok Endpoints ====================
+  /api/scrape/tiktok/profile:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok profile data
+      description: Retrieve complete TikTok profile information including follower count, bio, and statistics
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: TikTok username (without @)
+          schema:
+            type: string
+            example: charlidamelio
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                      username:
+                        type: string
+                      nickname:
+                        type: string
+                      avatar_url:
+                        type: string
+                      signature:
+                        type: string
+                      verified:
+                        type: boolean
+                      private_account:
+                        type: boolean
+                      follower_count:
+                        type: integer
+                      following_count:
+                        type: integer
+                      video_count:
+                        type: integer
+                      heart_count:
+                        type: integer
+                      profile_url:
+                        type: string
+                      scraped_at:
+                        type: string
+                        format: date-time
+                  metadata:
+                    $ref: '#/components/schemas/Metadata'
+        '400':
+          description: Bad request - missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/scrape/tiktok/feed:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok user feed videos
+      description: Retrieve recent videos from a TikTok user's feed
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: charlidamelio
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 30
+            example: 30
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/hashtag:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok hashtag videos
+      description: Retrieve videos for a specific hashtag with metadata
+      parameters:
+        - name: hashtag
+          in: query
+          required: true
+          schema:
+            type: string
+            example: viral
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/video:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok video details
+      description: Retrieve detailed information about a specific TikTok video
+      parameters:
+        - name: video_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "7234567890123456789"
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/trending:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok trending videos
+      description: Retrieve currently trending TikTok videos from For You page
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 30
+            example: 30
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/comments:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok video comments
+      description: Retrieve comments from a TikTok video with user information
+      parameters:
+        - name: video_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "7234567890123456789"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            example: 50
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== TikTok Shop Endpoints ====================
+  /api/scrape/tiktok-shop/search:
+    get:
+      tags:
+        - TikTok Shop
+      summary: Search TikTok Shop products
+      description: Search for products on TikTok Shop with pricing, ratings, and seller information
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: sneakers
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor for next page
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      query:
+                        type: string
+                      total_results:
+                        type: integer
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: string
+                            title:
+                              type: string
+                            price:
+                              type: number
+                            currency:
+                              type: string
+                            image_url:
+                              type: string
+                            shop_name:
+                              type: string
+                            rating:
+                              type: number
+                            review_count:
+                              type: integer
+                            sold_count:
+                              type: integer
+                      has_more:
+                        type: boolean
+                      cursor:
+                        type: string
+                  metadata:
+                    $ref: '#/components/schemas/Metadata'
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok-shop/product:
+    get:
+      tags:
+        - TikTok Shop
+      summary: Get TikTok Shop product details
+      description: Retrieve detailed product information including variants, shipping, and seller details
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "1234567890"
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok-shop/reviews:
+    get:
+      tags:
+        - TikTok Shop
+      summary: Get TikTok Shop product reviews
+      description: Retrieve product reviews with ratings, images, and verified purchase status
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "1234567890"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            example: 50
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: filter
+          in: query
+          required: false
+          description: Filter reviews (all, positive, negative, with_media)
+          schema:
+            type: string
+            default: all
+            enum: [all, positive, negative, with_media]
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== Instagram Endpoints ====================
+  /api/scrape/instagram/profile:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram profile data
+      description: Retrieve Instagram profile information including followers, bio, and post count
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: instagram
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/posts:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram user posts
+      description: Retrieve recent posts from an Instagram account
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: instagram
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 12
+            example: 12
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/post:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram single post
+      description: Retrieve detailed information about a single Instagram post
+      parameters:
+        - name: shortcode
+          in: query
+          required: true
+          schema:
+            type: string
+            example: CXtWMB2goFp
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/comments:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram post comments
+      description: Retrieve comments from an Instagram post
+      parameters:
+        - name: shortcode
+          in: query
+          required: true
+          schema:
+            type: string
+            example: CXtWMB2goFp
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            example: 50
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/search:
+    get:
+      tags:
+        - Instagram
+      summary: Search Instagram
+      description: Search for Instagram profiles, hashtags, or posts by keyword
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: travel
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            default: all
+            enum: [all, users, hashtags, posts]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== YouTube Endpoints ====================
+  /api/scrape/youtube/channel:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube channel data
+      description: Retrieve YouTube channel information including subscriber count and description
+      parameters:
+        - name: channel_id
+          in: query
+          required: true
+          description: YouTube channel ID or @handle
+          schema:
+            type: string
+            example: "@MrBeast"
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/videos:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube channel videos
+      description: Retrieve recent videos from a YouTube channel
+      parameters:
+        - name: channel_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "@MrBeast"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/video:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube video details
+      description: Retrieve detailed video information including views, likes, and description
+      parameters:
+        - name: video_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: dQw4w9WgXcQ
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/comments:
+    get:
+      tags:
+        - YouTube
+      summary: Get YouTube video comments
+      description: Retrieve comments from a YouTube video
+      parameters:
+        - name: video_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: dQw4w9WgXcQ
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            example: 50
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/youtube/search:
+    get:
+      tags:
+        - YouTube
+      summary: Search YouTube videos
+      description: Search for YouTube videos by keyword
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "ai tutorial"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== Twitter Endpoints ====================
+  /api/scrape/twitter/profile:
+    get:
+      tags:
+        - Twitter
+      summary: Get Twitter/X profile data
+      description: Retrieve Twitter profile information including followers, bio, and tweet count
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: elonmusk
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/twitter/feed:
+    get:
+      tags:
+        - Twitter
+      summary: Get Twitter/X user feed
+      description: Retrieve recent tweets from a Twitter user's timeline
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: elonmusk
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/twitter/search:
+    get:
+      tags:
+        - Twitter
+      summary: Search Twitter/X tweets
+      description: Search for tweets by keyword with optional filters
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "artificial intelligence"
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+            default: top
+            enum: [top, latest]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== LinkedIn Endpoints ====================
+  /api/scrape/linkedin/profile:
+    get:
+      tags:
+        - LinkedIn
+      summary: Get LinkedIn profile data
+      description: Retrieve LinkedIn profile information including work history and connections
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: williamhgates
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/linkedin/company:
+    get:
+      tags:
+        - LinkedIn
+      summary: Get LinkedIn company page data
+      description: Retrieve LinkedIn company page information including employee count and industry
+      parameters:
+        - name: company_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: microsoft
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== Facebook Endpoints ====================
+  /api/scrape/facebook/profile:
+    get:
+      tags:
+        - Facebook
+      summary: Get Facebook profile data
+      description: Retrieve Facebook profile information
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: zuck
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/facebook/posts:
+    get:
+      tags:
+        - Facebook
+      summary: Get Facebook user/page posts
+      description: Retrieve recent posts from a Facebook user or page
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: zuck
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== Reddit Endpoints ====================
+  /api/scrape/reddit/posts:
+    get:
+      tags:
+        - Reddit
+      summary: Get Reddit subreddit posts
+      description: Retrieve posts from a subreddit
+      parameters:
+        - name: subreddit
+          in: query
+          required: true
+          schema:
+            type: string
+            example: programming
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            default: hot
+            enum: [hot, new, top, rising]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+            example: 25
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/reddit/comments:
+    get:
+      tags:
+        - Reddit
+      summary: Get Reddit post comments
+      description: Retrieve comments from a Reddit post
+      parameters:
+        - name: subreddit
+          in: query
+          required: true
+          schema:
+            type: string
+            example: programming
+        - name: post_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: abc123
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+            example: 50
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  # ==================== General Endpoints ====================
+  /api/scrape/platforms:
+    get:
+      tags:
+        - General
+      summary: List all available platforms and endpoints
+      description: Get a complete list of all available scraping platforms and their endpoints
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      total_endpoints:
+                        type: integer
+                        example: 30
+                      platforms:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            endpoints:
+                              type: array
+                              items:
+                                type: object
+
+  /api/scrape/stats:
+    get:
+      tags:
+        - General
+      summary: Get user's scraping statistics
+      description: Retrieve API usage statistics for the authenticated user
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      overall:
+                        type: object
+                        properties:
+                          total_requests:
+                            type: integer
+                          successful_requests:
+                            type: integer
+                          failed_requests:
+                            type: integer
+                          avg_response_time_ms:
+                            type: number
+                          platforms_used:
+                            type: integer
+                          last_request_at:
+                            type: string
+                            format: date-time
+                      by_platform:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            platform:
+                              type: string
+                            requests:
+                              type: integer
+                            successful:
+                              type: integer
+                            avg_response_time:
+                              type: number
+        '500':
+          description: Server error
