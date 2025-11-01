@@ -30,6 +30,10 @@ const { scrapeAnalytics: scrapeTikTokAnalytics } = require('../../scrapers/tikto
 const { scrapeDemographics: scrapeTikTokDemographics } = require('../../scrapers/tiktok/demographics');
 const { scrapeTranscript: scrapeTikTokTranscript } = require('../../scrapers/tiktok/transcript');
 
+// TikTok social graph scrapers
+const { scrapeFollowers: scrapeTikTokFollowers } = require('../../scrapers/tiktok/followers');
+const { scrapeFollowing: scrapeTikTokFollowing } = require('../../scrapers/tiktok/following');
+
 // Instagram scrapers
 const { scrapeProfile: scrapeInstagramProfile } = require('../../scrapers/instagram/profile');
 const { scrapePosts: scrapeInstagramPosts } = require('../../scrapers/instagram/posts');
@@ -534,6 +538,62 @@ router.get('/tiktok/transcript', verifyApiKey, logApiRequest, afterRequest('tikt
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape TikTok transcript',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/followers
+ * Scrape TikTok user followers
+ */
+router.get('/tiktok/followers', verifyApiKey, logApiRequest, afterRequest('tiktok', 'followers'), async (req, res) => {
+  try {
+    const { username, cursor, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/tiktok/followers?username=charlidamelio&limit=20',
+      });
+    }
+
+    const result = await scrapeTikTokFollowers(username, cursor, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok followers scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok followers',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/tiktok/following
+ * Scrape TikTok user following
+ */
+router.get('/tiktok/following', verifyApiKey, logApiRequest, afterRequest('tiktok', 'following'), async (req, res) => {
+  try {
+    const { username, cursor, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/tiktok/following?username=charlidamelio&limit=20',
+      });
+    }
+
+    const result = await scrapeTikTokFollowing(username, cursor, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('TikTok following scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape TikTok following',
       message: error.message,
     });
   }
@@ -1373,7 +1433,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 43,
+      total_endpoints: 45,
       platforms: [
         {
           name: 'TikTok',
@@ -1443,6 +1503,18 @@ router.get('/platforms', async (req, res) => {
               description: 'Get TikTok video transcript, captions, and subtitles',
               params: ['video_id', 'include_subtitles (optional)'],
               example: '?video_id=7234567890123456789&include_subtitles=true',
+            },
+            {
+              path: '/api/scrape/tiktok/followers',
+              description: 'Get TikTok user followers list with pagination',
+              params: ['username', 'cursor (optional)', 'limit (optional)'],
+              example: '?username=charlidamelio&limit=20',
+            },
+            {
+              path: '/api/scrape/tiktok/following',
+              description: 'Get TikTok user following list with pagination',
+              params: ['username', 'cursor (optional)', 'limit (optional)'],
+              example: '?username=charlidamelio&limit=20',
             },
           ],
         },

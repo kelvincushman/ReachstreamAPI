@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 43 endpoints
+ * Comprehensive API documentation with all 45 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -157,6 +157,24 @@ export default function Documentation() {
         description: 'Extract video captions, subtitles, and auto-generated transcripts',
         credits: 1,
         example: '7123456789012345678'
+      },
+      {
+        id: 'tiktok-followers',
+        name: 'TikTok Followers',
+        endpoint: '/api/scrape/tiktok/followers',
+        params: '?username=:username&limit=20',
+        description: 'Get list of followers for a TikTok user with pagination support',
+        credits: 2,
+        example: 'charlidamelio'
+      },
+      {
+        id: 'tiktok-following',
+        name: 'TikTok Following',
+        endpoint: '/api/scrape/tiktok/following',
+        params: '?username=:username&limit=20',
+        description: 'Get list of users that a TikTok user is following with pagination',
+        credits: 2,
+        example: 'charlidamelio'
       }
     ],
     'tiktok-shop': [

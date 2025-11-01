@@ -300,9 +300,73 @@
             "description": "Extract video captions, subtitles, auto-generated transcripts, and text analysis with entity extraction (hashtags, mentions, URLs).\n\nCost: 1 credit"
           },
           "response": []
+        },
+        {
+          "name": "TikTok Followers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/followers?username=charlidamelio&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "followers"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "charlidamelio",
+                  "description": "TikTok username (without @)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of followers to fetch (optional, 1-50, default 20)"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "description": "Pagination cursor for next page (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get list of followers for a TikTok user with pagination support. Returns user profiles with follower counts and verification status.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Following",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/following?username=charlidamelio&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "following"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "charlidamelio",
+                  "description": "TikTok username (without @)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of users to fetch (optional, 1-50, default 20)"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "description": "Pagination cursor for next page (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get list of users that a TikTok user is following with pagination support. Returns user profiles with follower counts and verification status.\n\nCost: 2 credits"
+          },
+          "response": []
         }
       ],
-      "description": "TikTok scraping endpoints for profiles, videos, hashtags, search, sounds, analytics, demographics, transcripts, and more."
+      "description": "TikTok scraping endpoints for profiles, videos, hashtags, search, sounds, analytics, demographics, transcripts, social graph, and more."
     },
     {
       "name": "TikTok Shop",

@@ -50,7 +50,7 @@ The collection uses two variables that you need to configure:
 
 The collection is organized by platform:
 
-### TikTok (11 endpoints)
+### TikTok (13 endpoints)
 - **TikTok Profile** - Get profile data (1 credit)
 - **TikTok User Feed** - Get user's videos (2 credits)
 - **TikTok Hashtag** - Get hashtag videos (3 credits)
@@ -62,6 +62,8 @@ The collection is organized by platform:
 - **TikTok Analytics** - Get advanced analytics with engagement metrics (2 credits)
 - **TikTok Demographics** - Get audience demographics (2 credits)
 - **TikTok Transcript** - Get video captions and transcripts (1 credit)
+- **TikTok Followers** - Get user's followers list with pagination (2 credits)
+- **TikTok Following** - Get user's following list with pagination (2 credits)
 
 ### TikTok Shop (3 endpoints)
 - **TikTok Shop Search** - Search products (1 credit)
@@ -113,7 +115,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 43 endpoints**
+**Total: 45 endpoints**
 
 ## Authentication
 
@@ -251,6 +253,12 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.3.0 (2025-11-01)
+- Added TikTok Social Graph (2 new endpoints, 45 total)
+- NEW: TikTok Followers and Following endpoints
+- Complete TikTok social graph functionality with pagination
+- Enhanced user discovery and network analysis capabilities
 
 ### v1.2.0 (2025-11-01)
 - Added Threads platform (5 new endpoints, 43 total)

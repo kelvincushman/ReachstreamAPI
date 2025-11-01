@@ -526,6 +526,148 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/tiktok/followers:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok user followers
+      description: Retrieve list of followers for a TikTok user with pagination support
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: charlidamelio
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor for next page
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Number of followers to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      total_followers:
+                        type: integer
+                      followers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            user_id:
+                              type: string
+                            username:
+                              type: string
+                            nickname:
+                              type: string
+                            avatar:
+                              type: string
+                            is_verified:
+                              type: boolean
+                            follower_count:
+                              type: integer
+                      has_more:
+                        type: boolean
+                      next_cursor:
+                        type: string
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/following:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok user following
+      description: Retrieve list of users that a TikTok user is following with pagination support
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: charlidamelio
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor for next page
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Number of users to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      total_following:
+                        type: integer
+                      following:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            user_id:
+                              type: string
+                            username:
+                              type: string
+                            nickname:
+                              type: string
+                            avatar:
+                              type: string
+                            is_verified:
+                              type: boolean
+                            follower_count:
+                              type: integer
+                      has_more:
+                        type: boolean
+                      next_cursor:
+                        type: string
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== TikTok Shop Endpoints ====================
   /api/scrape/tiktok-shop/search:
     get:
