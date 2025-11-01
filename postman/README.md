@@ -111,11 +111,16 @@ The collection is organized by platform:
 - **Threads Search** - Search posts by keyword (2 credits)
 - **Threads User Search** - Search users by keyword (2 credits)
 
+### Bluesky (3 endpoints)
+- **Bluesky Profile** - Get profile data (1 credit)
+- **Bluesky Posts** - Get user's posts with pagination (2 credits)
+- **Bluesky Single Post** - Get post details (1 credit)
+
 ### General (2 endpoints)
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 45 endpoints**
+**Total: 48 endpoints**
 
 ## Authentication
 
@@ -253,6 +258,13 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.4.0 (2025-11-01)
+- Added Bluesky platform (3 new endpoints, 48 total)
+- NEW: Bluesky Profile, Posts, Single Post
+- 9 platforms total (added Bluesky/AT Protocol)
+- First decentralized social network integration
+- Full support for facets, media, replies, and quoted posts
 
 ### v1.3.0 (2025-11-01)
 - Added TikTok Social Graph (2 new endpoints, 45 total)

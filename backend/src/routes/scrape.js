@@ -75,6 +75,11 @@ const { scrapePost: scrapeThreadsPost } = require('../../scrapers/threads/post')
 const { searchPosts: searchThreadsPosts } = require('../../scrapers/threads/search');
 const { searchUsers: searchThreadsUsers } = require('../../scrapers/threads/search-users');
 
+// Bluesky scrapers
+const { scrapeProfile: scrapeBlueskyProfile } = require('../../scrapers/bluesky/profile');
+const { scrapePosts: scrapeBlueskyPosts } = require('../../scrapers/bluesky/posts');
+const { scrapePost: scrapeBlueskyPost } = require('../../scrapers/bluesky/post');
+
 /**
  * Middleware to log API requests
  */
@@ -1373,6 +1378,92 @@ router.get('/threads/search-users', verifyApiKey, logApiRequest, afterRequest('t
   }
 });
 
+// ==================== Bluesky Routes ====================
+
+/**
+ * GET /api/scrape/bluesky/profile
+ * Scrape Bluesky profile
+ */
+router.get('/bluesky/profile', verifyApiKey, logApiRequest, afterRequest('bluesky', 'profile'), async (req, res) => {
+  try {
+    const { handle } = req.query;
+
+    if (!handle) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: handle',
+        example: '/api/scrape/bluesky/profile?handle=user.bsky.social',
+      });
+    }
+
+    const result = await scrapeBlueskyProfile(handle);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Bluesky profile scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Bluesky profile',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/bluesky/posts
+ * Scrape Bluesky user posts
+ */
+router.get('/bluesky/posts', verifyApiKey, logApiRequest, afterRequest('bluesky', 'posts'), async (req, res) => {
+  try {
+    const { handle, limit, cursor } = req.query;
+
+    if (!handle) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: handle',
+        example: '/api/scrape/bluesky/posts?handle=user.bsky.social&limit=20',
+      });
+    }
+
+    const result = await scrapeBlueskyPosts(handle, limit ? parseInt(limit, 10) : 20, cursor);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Bluesky posts scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Bluesky posts',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/bluesky/post
+ * Scrape Bluesky single post
+ */
+router.get('/bluesky/post', verifyApiKey, logApiRequest, afterRequest('bluesky', 'post'), async (req, res) => {
+  try {
+    const { post_uri, url } = req.query;
+
+    if (!post_uri && !url) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: post_uri or url',
+        example: '/api/scrape/bluesky/post?url=https://bsky.app/profile/user.bsky.social/post/3k7...',
+      });
+    }
+
+    const result = await scrapeBlueskyPost(post_uri || url);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Bluesky post scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Bluesky post',
+      message: error.message,
+    });
+  }
+});
+
 // ==================== General Stats Route ====================
 
 /**
@@ -1433,7 +1524,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 45,
+      total_endpoints: 48,
       platforms: [
         {
           name: 'TikTok',
@@ -1735,6 +1826,29 @@ router.get('/platforms', async (req, res) => {
               description: 'Search Threads users by keyword',
               params: ['query', 'limit (optional)'],
               example: '?query=tech&limit=20',
+            },
+          ],
+        },
+        {
+          name: 'Bluesky',
+          endpoints: [
+            {
+              path: '/api/scrape/bluesky/profile',
+              description: 'Get Bluesky profile data',
+              params: ['handle'],
+              example: '?handle=user.bsky.social',
+            },
+            {
+              path: '/api/scrape/bluesky/posts',
+              description: 'Get Bluesky user posts with pagination',
+              params: ['handle', 'limit (optional)', 'cursor (optional)'],
+              example: '?handle=user.bsky.social&limit=20',
+            },
+            {
+              path: '/api/scrape/bluesky/post',
+              description: 'Get Bluesky single post details',
+              params: ['post_uri or url'],
+              example: '?url=https://bsky.app/profile/user.bsky.social/post/3k7...',
             },
           ],
         },

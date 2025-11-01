@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 45 endpoints
+ * Comprehensive API documentation with all 48 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -28,7 +28,8 @@ export default function Documentation() {
     facebook: false,
     linkedin: false,
     reddit: false,
-    threads: false
+    threads: false,
+    bluesky: false
   });
   const [copiedEndpoint, setCopiedEndpoint] = useState(null);
 
@@ -462,6 +463,35 @@ export default function Documentation() {
         credits: 2,
         example: 'tech'
       }
+    ],
+    bluesky: [
+      {
+        id: 'bluesky-profile',
+        name: 'Bluesky Profile',
+        endpoint: '/api/scrape/bluesky/profile',
+        params: '?handle=:handle',
+        description: 'Get Bluesky profile data including follower count and bio',
+        credits: 1,
+        example: 'user.bsky.social'
+      },
+      {
+        id: 'bluesky-posts',
+        name: 'Bluesky Posts',
+        endpoint: '/api/scrape/bluesky/posts',
+        params: '?handle=:handle&limit=20',
+        description: 'Get recent posts from a Bluesky user with pagination',
+        credits: 2,
+        example: 'user.bsky.social'
+      },
+      {
+        id: 'bluesky-post',
+        name: 'Bluesky Single Post',
+        endpoint: '/api/scrape/bluesky/post',
+        params: '?url=:url',
+        description: 'Get detailed information about a single Bluesky post',
+        credits: 1,
+        example: 'https://bsky.app/profile/user.bsky.social/post/3k7...'
+      }
     ]
   };
 
@@ -474,7 +504,8 @@ export default function Documentation() {
     facebook: 'Facebook',
     linkedin: 'LinkedIn',
     reddit: 'Reddit',
-    threads: 'Threads'
+    threads: 'Threads',
+    bluesky: 'Bluesky'
   };
 
   const platformColors = {
@@ -486,7 +517,8 @@ export default function Documentation() {
     facebook: 'border-blue-600',
     linkedin: 'border-blue-700',
     reddit: 'border-orange-500',
-    threads: 'border-gray-900'
+    threads: 'border-gray-900',
+    bluesky: 'border-sky-500'
   };
 
   return (

@@ -1155,6 +1155,92 @@
       "description": "Threads (Meta) scraping endpoints for profiles, posts, and search."
     },
     {
+      "name": "Bluesky",
+      "item": [
+        {
+          "name": "Bluesky Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/bluesky/profile?handle=user.bsky.social",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "bluesky", "profile"],
+              "query": [
+                {
+                  "key": "handle",
+                  "value": "user.bsky.social",
+                  "description": "Bluesky handle (e.g., user.bsky.social)"
+                }
+              ]
+            },
+            "description": "Get Bluesky profile data including follower count, bio, and metrics.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "Bluesky Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/bluesky/posts?handle=user.bsky.social&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "bluesky", "posts"],
+              "query": [
+                {
+                  "key": "handle",
+                  "value": "user.bsky.social",
+                  "description": "Bluesky handle (e.g., user.bsky.social)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of posts to fetch (optional, default 20, max 100)"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "description": "Pagination cursor for next page (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get recent posts from a Bluesky user with pagination support. Includes media, stats, and facets (hashtags, mentions).\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Bluesky Single Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/bluesky/post?url=https://bsky.app/profile/user.bsky.social/post/3k7...",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "bluesky", "post"],
+              "query": [
+                {
+                  "key": "url",
+                  "value": "https://bsky.app/profile/user.bsky.social/post/3k7...",
+                  "description": "Bluesky post URL"
+                },
+                {
+                  "key": "post_uri",
+                  "value": "",
+                  "description": "AT Protocol URI (alternative to url)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get detailed information about a single Bluesky post including author, media, stats, replies, and parent/quoted posts.\n\nCost: 1 credit"
+          },
+          "response": []
+        }
+      ],
+      "description": "Bluesky (AT Protocol) scraping endpoints for profiles, posts, and social features."
+    },
+    {
       "name": "General",
       "item": [
         {
