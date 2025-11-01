@@ -1283,6 +1283,159 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/instagram/video:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram IGTV videos
+      description: Retrieve IGTV (long-form) videos from user profile with performance metrics
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Instagram username (without @)
+          schema:
+            type: string
+            example: natgeo
+        - name: limit
+          in: query
+          required: false
+          description: Number of videos to fetch (1-50)
+          schema:
+            type: integer
+            default: 12
+            example: 12
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      total_videos:
+                        type: integer
+                      videos:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            shortcode:
+                              type: string
+                            url:
+                              type: string
+                            video_url:
+                              type: string
+                            thumbnail_url:
+                              type: string
+                            title:
+                              type: string
+                            caption:
+                              type: string
+                            duration:
+                              type: integer
+                            stats:
+                              type: object
+                              properties:
+                                views:
+                                  type: integer
+                                likes:
+                                  type: integer
+                                comments:
+                                  type: integer
+                      statistics:
+                        type: object
+                        properties:
+                          total_views:
+                            type: integer
+                          avg_views_per_video:
+                            type: integer
+                          avg_duration_seconds:
+                            type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/instagram/highlights:
+    get:
+      tags:
+        - Instagram
+      summary: Get Instagram Story Highlights
+      description: Retrieve Story Highlights from user profile
+      parameters:
+        - name: username
+          in: query
+          required: true
+          description: Instagram username (without @)
+          schema:
+            type: string
+            example: natgeo
+        - name: limit
+          in: query
+          required: false
+          description: Number of highlights to fetch (1-50)
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      total_highlights:
+                        type: integer
+                      highlights:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            title:
+                              type: string
+                            cover_image:
+                              type: string
+                            url:
+                              type: string
+                            items_count:
+                              type: integer
+                      statistics:
+                        type: object
+                        properties:
+                          total_items:
+                            type: integer
+                          total_highlights:
+                            type: integer
+                          avg_items_per_highlight:
+                            type: integer
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== YouTube Endpoints ====================
   /api/scrape/youtube/channel:
     get:

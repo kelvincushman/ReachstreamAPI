@@ -48,6 +48,8 @@ const { searchInstagram } = require('../../scrapers/instagram/search');
 const { scrapeReels: scrapeInstagramReels } = require('../../scrapers/instagram/reels');
 const { scrapeStories: scrapeInstagramStories } = require('../../scrapers/instagram/stories');
 const { scrapeHashtag: scrapeInstagramHashtag } = require('../../scrapers/instagram/hashtag');
+const { scrapeIGTV: scrapeInstagramIGTV } = require('../../scrapers/instagram/video');
+const { scrapeHighlights: scrapeInstagramHighlights } = require('../../scrapers/instagram/highlights');
 
 // YouTube scrapers
 const { scrapeChannel: scrapeYouTubeChannel } = require('../../scrapers/youtube/channel');
@@ -924,6 +926,68 @@ router.get('/instagram/hashtag', verifyApiKey, logApiRequest, afterRequest('inst
     return res.status(500).json({
       success: false,
       error: 'Failed to scrape Instagram hashtag',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/video
+ * Scrape Instagram IGTV videos
+ */
+router.get('/instagram/video', verifyApiKey, logApiRequest, afterRequest('instagram', 'video'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/instagram/video?username=natgeo&limit=12',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await scrapeInstagramIGTV(username, limit ? parseInt(limit, 10) : 12);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram IGTV scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram IGTV',
+      message: error.message,
+    });
+  }
+});
+
+/**
+ * GET /api/scrape/instagram/highlights
+ * Scrape Instagram Story Highlights
+ */
+router.get('/instagram/highlights', verifyApiKey, logApiRequest, afterRequest('instagram', 'highlights'), async (req, res) => {
+  try {
+    const { username, limit } = req.query;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: username',
+        example: '/api/scrape/instagram/highlights?username=natgeo&limit=20',
+      });
+    }
+
+    // Deduct credits
+    await creditService.deductCredits(req.apiKey, 2);
+
+    const result = await scrapeInstagramHighlights(username, limit ? parseInt(limit, 10) : 20);
+    return res.status(result.success ? 200 : 500).json(result);
+  } catch (error) {
+    console.error('Instagram Story Highlights scraping error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to scrape Instagram Story Highlights',
       message: error.message,
     });
   }
@@ -1821,7 +1885,7 @@ router.get('/platforms', async (req, res) => {
   res.json({
     success: true,
     data: {
-      total_endpoints: 58,
+      total_endpoints: 60,
       platforms: [
         {
           name: 'TikTok',
@@ -1997,6 +2061,18 @@ router.get('/platforms', async (req, res) => {
               description: 'Get Instagram hashtag performance and top posts',
               params: ['hashtag', 'limit (optional)'],
               example: '?hashtag=travel&limit=12',
+            },
+            {
+              path: '/api/scrape/instagram/video',
+              description: 'Get Instagram IGTV videos from user profile',
+              params: ['username', 'limit (optional)'],
+              example: '?username=natgeo&limit=12',
+            },
+            {
+              path: '/api/scrape/instagram/highlights',
+              description: 'Get Instagram Story Highlights from user profile',
+              params: ['username', 'limit (optional)'],
+              example: '?username=natgeo&limit=20',
             },
           ],
         },

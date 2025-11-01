@@ -732,6 +732,58 @@
             "description": "Analyze hashtag performance with top posts, engagement metrics, popularity tier, and content insights.\n\nCost: 2 credits"
           },
           "response": []
+        },
+        {
+          "name": "Instagram Video (IGTV)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/video?username=natgeo&limit=12",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "video"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "natgeo",
+                  "description": "Instagram username (without @)"
+                },
+                {
+                  "key": "limit",
+                  "value": "12",
+                  "description": "Number of videos (optional, 1-50, default 12)"
+                }
+              ]
+            },
+            "description": "Get IGTV (long-form) videos from user profile with performance metrics.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "Instagram Story Highlights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/instagram/highlights?username=natgeo&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "instagram", "highlights"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "natgeo",
+                  "description": "Instagram username (without @)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of highlights (optional, 1-50, default 20)"
+                }
+              ]
+            },
+            "description": "Get Story Highlights from user profile with item counts.\n\nCost: 2 credits"
+          },
+          "response": []
         }
       ],
       "description": "Instagram scraping endpoints for profiles, posts, reels, stories, hashtags, and more."

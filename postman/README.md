@@ -73,7 +73,7 @@ The collection is organized by platform:
 - **TikTok Shop Product** - Get product details (1 credit)
 - **TikTok Shop Reviews** - Get product reviews (2 credits)
 
-### Instagram (8 endpoints)
+### Instagram (10 endpoints)
 - **Instagram Profile** - Get profile data (1 credit)
 - **Instagram Posts** - Get user's posts (2 credits)
 - **Instagram Single Post** - Get single post details (1 credit)
@@ -82,6 +82,8 @@ The collection is organized by platform:
 - **Instagram Reels** - Get user's Reels with performance metrics (2 credits)
 - **Instagram Stories** - Get active Stories and highlights (1 credit)
 - **Instagram Hashtag** - Analyze hashtag performance (2 credits)
+- **Instagram Video (IGTV)** - Get IGTV videos with performance metrics (2 credits)
+- **Instagram Story Highlights** - Get Story Highlights from profile (2 credits)
 
 ### YouTube (8 endpoints)
 - **YouTube Channel** - Get channel data (1 credit)
@@ -126,7 +128,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 58 endpoints**
+**Total: 60 endpoints**
 
 ## Authentication
 
@@ -264,6 +266,12 @@ If you hit the rate limit, you'll receive a `429 Too Many Requests` response.
 - **Issues**: https://github.com/yourusername/ReachstreamAPI/issues
 
 ## Changelog
+
+### v1.7.0 (2025-11-01)
+- Added Instagram Enhanced Content (2 new endpoints, 60 total)
+- NEW: Instagram Video (IGTV) - Long-form video content
+- NEW: Instagram Story Highlights - Saved Story collections
+- Complete Instagram video and story capabilities
 
 ### v1.6.0 (2025-11-01)
 - Added TikTok Enhanced Search (3 new endpoints, 58 total)

@@ -1,6 +1,6 @@
 /**
  * Documentation Page
- * Comprehensive API documentation with all 58 endpoints
+ * Comprehensive API documentation with all 60 endpoints
  */
 
 import { useState, useEffect } from 'react';
@@ -306,6 +306,24 @@ export default function Documentation() {
         description: 'Analyze hashtag performance with top posts and engagement metrics',
         credits: 2,
         example: 'travel'
+      },
+      {
+        id: 'instagram-video',
+        name: 'Instagram Video (IGTV)',
+        endpoint: '/api/scrape/instagram/video',
+        params: '?username=:username&limit=12',
+        description: 'Get IGTV (long-form) videos from user profile with performance metrics',
+        credits: 2,
+        example: 'natgeo'
+      },
+      {
+        id: 'instagram-highlights',
+        name: 'Instagram Story Highlights',
+        endpoint: '/api/scrape/instagram/highlights',
+        params: '?username=:username&limit=20',
+        description: 'Get Story Highlights from user profile with item counts',
+        credits: 2,
+        example: 'natgeo'
       }
     ],
     youtube: [
