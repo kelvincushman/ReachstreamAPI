@@ -50,13 +50,16 @@ The collection uses two variables that you need to configure:
 
 The collection is organized by platform:
 
-### TikTok (6 endpoints)
+### TikTok (9 endpoints)
 - **TikTok Profile** - Get profile data (1 credit)
 - **TikTok User Feed** - Get user's videos (2 credits)
 - **TikTok Hashtag** - Get hashtag videos (3 credits)
 - **TikTok Video** - Get video details (1 credit)
 - **TikTok Trending** - Get trending videos (3 credits)
 - **TikTok Comments** - Get video comments (2 credits)
+- **TikTok Search** - Search users/videos/hashtags/sounds (2 credits)
+- **TikTok Sound** - Get sound/music details (1 credit)
+- **TikTok Analytics** - Get advanced analytics with engagement metrics (2 credits)
 
 ### TikTok Shop (3 endpoints)
 - **TikTok Shop Search** - Search products (1 credit)
@@ -98,7 +101,7 @@ The collection is organized by platform:
 - **List Platforms** - Get all available platforms (no auth)
 - **Get User Stats** - Get your usage statistics
 
-**Total: 30 endpoints**
+**Total: 33 endpoints**
 
 ## Authentication
 

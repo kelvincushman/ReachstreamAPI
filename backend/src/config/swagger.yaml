@@ -267,6 +267,163 @@ paths:
         '500':
           description: Server error
 
+  /api/scrape/tiktok/search:
+    get:
+      tags:
+        - TikTok
+      summary: Search TikTok
+      description: Search for users, videos, hashtags, and sounds on TikTok
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            example: dance
+        - name: type
+          in: query
+          required: false
+          description: Search type (all, users, videos, hashtags, sounds)
+          schema:
+            type: string
+            default: all
+            enum: [all, users, videos, hashtags, sounds]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/sound:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok sound/music details
+      description: Retrieve detailed information about a TikTok sound including usage stats and top videos
+      parameters:
+        - name: sound_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "1234567890"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      sound_id:
+                        type: string
+                      title:
+                        type: string
+                      author:
+                        type: string
+                      duration:
+                        type: integer
+                      original:
+                        type: boolean
+                      stats:
+                        type: object
+                        properties:
+                          video_count:
+                            type: integer
+                          play_count:
+                            type: integer
+                      top_videos:
+                        type: array
+                        items:
+                          type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /api/scrape/tiktok/analytics:
+    get:
+      tags:
+        - TikTok
+      summary: Get TikTok user analytics
+      description: Retrieve advanced analytics including engagement rate, growth metrics, and performance indicators
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: charlidamelio
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      profile:
+                        type: object
+                      followers:
+                        type: object
+                      content:
+                        type: object
+                      engagement:
+                        type: object
+                        properties:
+                          engagement_rate:
+                            type: number
+                          average_views_per_video:
+                            type: integer
+                          average_likes_per_video:
+                            type: integer
+                          average_comments_per_video:
+                            type: integer
+                          average_shares_per_video:
+                            type: integer
+                      performance:
+                        type: object
+                      growth_indicators:
+                        type: object
+                        properties:
+                          viral_potential:
+                            type: string
+                            enum: [high, medium, low]
+                          account_health:
+                            type: string
+                            enum: [excellent, good, average, needs_improvement]
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
   # ==================== TikTok Shop Endpoints ====================
   /api/scrape/tiktok-shop/search:
     get:

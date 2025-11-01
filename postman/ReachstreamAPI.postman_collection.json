@@ -174,9 +174,88 @@
             "description": "Get comments from a TikTok video with user information.\n\nCost: 2 credits"
           },
           "response": []
+        },
+        {
+          "name": "TikTok Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/search?query=dance&type=videos&limit=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "search"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "dance",
+                  "description": "Search query"
+                },
+                {
+                  "key": "type",
+                  "value": "videos",
+                  "description": "Search type: all, users, videos, hashtags, sounds (optional, default all)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of results (optional, default 20)"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "description": "Pagination cursor (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Search TikTok for users, videos, hashtags, and sounds.\n\nCost: 2 credits"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Sound",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/sound?sound_id=1234567890",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "sound"],
+              "query": [
+                {
+                  "key": "sound_id",
+                  "value": "1234567890",
+                  "description": "TikTok sound/music ID"
+                }
+              ]
+            },
+            "description": "Get detailed sound/music information including usage stats and top videos using this sound.\n\nCost: 1 credit"
+          },
+          "response": []
+        },
+        {
+          "name": "TikTok Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/scrape/tiktok/analytics?username=charlidamelio",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "scrape", "tiktok", "analytics"],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "charlidamelio",
+                  "description": "TikTok username (without @)"
+                }
+              ]
+            },
+            "description": "Get advanced analytics including engagement rate, growth metrics, viral potential, account health score, and performance indicators.\n\nCost: 2 credits"
+          },
+          "response": []
         }
       ],
-      "description": "TikTok scraping endpoints for profiles, videos, hashtags, and more."
+      "description": "TikTok scraping endpoints for profiles, videos, hashtags, search, sounds, analytics, and more."
     },
     {
       "name": "TikTok Shop",
